@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">E-HUB</string>
+    <string name="select_department">Επιλέξτε Τμήμα</string>
+
+
+    <string-array name="department_options">
+        <item>Επιλέξτε Τμήμα</item>
+        <item>Ψυγεία</item>
+        <item>Grocery</item>
+        <item>Αποθήκη</item>
+
+    </string-array>
+</resources>
