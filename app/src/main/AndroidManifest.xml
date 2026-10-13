@@ -24,6 +24,18 @@
         <activity android:name=".RegisterActivity"
             android:exported="false"
             />
+        <activity android:name=".departments.CustomerSupportActivity"
+            android:exported="false"/>
+        <activity android:name=".departments.DepartmentsActivity"
+            android:exported="false"/>
+        <activity android:name=".departments.WarehouseActivity"
+            android:exported="false"/>
+        <activity android:name=".departments.FridgeActivity"
+            android:exported="false"/>
+        <activity android:name=".departments.GroceryActivity"
+            android:exported="false"/>
+        <activity android:name=".ProductsActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
