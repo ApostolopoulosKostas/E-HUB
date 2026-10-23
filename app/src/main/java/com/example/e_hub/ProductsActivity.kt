@@ -25,6 +25,16 @@ class ProductsActivity : AppCompatActivity (){
 
         productSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {
+
+
+            }
+
+            override fun beforeTextChanged(text: CharSequence? ,
+                         start: Int, count: Int , after: Int) {
+
+            }
+
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = text.toString().trim()
                 if (query.length>=4){
                     productSuggestionsList.removeAllViews()
@@ -33,19 +43,6 @@ class ProductsActivity : AppCompatActivity (){
                 }else{
                     productSuggestionScroll.visibility= View.GONE
                 }
-
-            }
-
-            override fun beforeTextChanged
-
-                        (text: CharSequence? ,
-                         start: Int, count: Int , after: Int) {
-
-            }
-
-            override fun onTextChanged
-                        (text: CharSequence?,
-                         start: Int, before: Int, count: Int) {
 
             }
         })
