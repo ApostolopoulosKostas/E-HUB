@@ -28,7 +28,6 @@ object SupabaseClient {
                 }.decodeList<Product>()
 
         } else {
-
             return client.from("products")
                 .select {
                     filter {

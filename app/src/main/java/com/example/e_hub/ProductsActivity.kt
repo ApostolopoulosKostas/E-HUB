@@ -1,3 +1,6 @@
+//lifecycleScope gives our activity a place to run coroutine work safely within its lifecycle.
+//launch starts that work, allowing us to call the suspend function searchProducts()
+
 package com.example.e_hub
 import android.os.Bundle
 import android.text.Editable
@@ -7,7 +10,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
-import io.ktor.http.CacheControl
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class ProductsActivity : AppCompatActivity (){
 
@@ -17,9 +21,7 @@ class ProductsActivity : AppCompatActivity (){
 
         val productSearch = findViewById<EditText>(R.id.productsearch)//search
         val productsResultList = findViewById<LinearLayout>(R.id.productsResultsList)
-
-
-              //suggestions while typing
+        //suggestions while typing
         val productSuggestionScroll = findViewById<ScrollView>(R.id.productSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.productSuggestionsList)
 
@@ -39,10 +41,14 @@ class ProductsActivity : AppCompatActivity (){
                 if (query.length>=4){
                     productSuggestionsList.removeAllViews()
                     productSuggestionScroll.visibility= View.VISIBLE
+                    lifecycleScope.launch{
+                        val products = SupabaseClient.searchProducts(query)
+                    }
 
                 }else{
                     productSuggestionScroll.visibility= View.GONE
                 }
+
 
             }
         })
