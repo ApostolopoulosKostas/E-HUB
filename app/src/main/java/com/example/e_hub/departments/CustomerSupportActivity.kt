@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
@@ -20,12 +21,16 @@ class CustomerSupportActivity : AppCompatActivity() {
         val productSuggestionScroll = findViewById<ScrollView>(R.id.customerSupSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.customerSupSuggestionsList)
 
+
         val searchBar = SearchBar(
             searchField = productSearch,
             productSuggestionScroll=productSuggestionScroll,
             productSuggestionsList =productSuggestionsList,
             scope =lifecycleScope,
-            context = this
+            context = this,
+            onProductSelected = { }
+
+
 
         )
         searchBar.searchListener()

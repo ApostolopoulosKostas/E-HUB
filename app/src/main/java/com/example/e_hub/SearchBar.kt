@@ -16,7 +16,8 @@ class SearchBar (
     private val productSuggestionScroll : ScrollView,
     private val productSuggestionsList : LinearLayout,
     private val scope: CoroutineScope,
-    private val context: Context
+    private val context: Context,
+    val onProductSelected:(Product) -> Unit
 ) {
 
     fun searchListener() {
@@ -55,6 +56,10 @@ class SearchBar (
 
 
                             productSuggestionsList.addView(suggestion)
+
+                            suggestion.setOnClickListener {
+                                onProductSelected(product)
+                            }
                         }
                     }
 

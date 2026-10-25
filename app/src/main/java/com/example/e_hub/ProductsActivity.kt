@@ -1,8 +1,10 @@
 package com.example.e_hub
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 
@@ -19,17 +21,23 @@ class ProductsActivity : AppCompatActivity (){
         val productSearch = findViewById<EditText>(R.id.productsearch)//search
         val productSuggestionScroll = findViewById<ScrollView>(R.id.productSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.productSuggestionsList)
+        val productsResultList = findViewById<LinearLayout>(R.id.productsResultsList)
+
 
         val searchBar = SearchBar(
             searchField = productSearch,
             productSuggestionScroll=productSuggestionScroll,
             productSuggestionsList =productSuggestionsList,
             scope =lifecycleScope,
-            context = this
+            context = this,
 
+            onProductSelected ={product ->
+                val selectedProduct = TextView(this)
+                selectedProduct.text = "${product.code} - ${product.name}"
+                selectedProduct.setTextColor(Color.YELLOW)
+                productsResultList.addView(selectedProduct)
+            }
         )
         searchBar.searchListener()
-
-
     }
 }

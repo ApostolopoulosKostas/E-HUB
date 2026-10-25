@@ -26,7 +26,8 @@ class GroceryActivity : AppCompatActivity() {
             productSuggestionScroll=productSuggestionScroll,
             productSuggestionsList =productSuggestionsList,
             scope =lifecycleScope,
-            context = this
+            context = this,
+            onProductSelected = { }
 
         )
         searchBar.searchListener()
