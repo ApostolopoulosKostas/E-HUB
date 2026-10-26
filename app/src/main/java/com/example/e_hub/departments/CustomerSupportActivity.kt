@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -28,14 +29,24 @@ class CustomerSupportActivity : AppCompatActivity() {
             productSuggestionsList =productSuggestionsList,
             scope =lifecycleScope,
             context = this,
-            onProductSelected = { }
+            onProductSelected = {product ->
+                productSearch.setText("${product.code} - ${product.name}")
+                productSuggestionScroll.visibility = android.view.View.GONE
+            }
 
 
 
         )
         searchBar.searchListener()
 
+        val quantityInput =findViewById<EditText>(R.id.quantityInput)
+        val locationInput = findViewById<EditText>(R.id.locationInput)
+        val messageInput =findViewById<EditText>(R.id.messageInput)
+        val selectDepartment =findViewById<Spinner>(R.id.selectDepartment)
+
     }
+
+
 
 
 }
