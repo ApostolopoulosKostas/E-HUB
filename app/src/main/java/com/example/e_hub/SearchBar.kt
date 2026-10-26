@@ -1,6 +1,8 @@
 package com.example.e_hub
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -51,8 +53,12 @@ class SearchBar (
                         val products = SupabaseClient.searchProducts(query)
                         products.forEach { product ->
                             val suggestion = android.widget.TextView(context)
+                            suggestion.setPadding(16,16,16,16)
+                            suggestion.setTextColor(Color.BLACK)
+                            suggestion.setTypeface(null, Typeface.BOLD)
+                            //suggestion.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context,R.color.orange))
 
-                            suggestion.text = product.code + " - " + product.name.trim()
+                            suggestion.text = product.code + " \n " + product.name.trim()
 
 
                             productSuggestionsList.addView(suggestion)
