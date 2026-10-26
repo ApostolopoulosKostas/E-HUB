@@ -73,8 +73,6 @@ class SearchBar (
                 }else{
                     productSuggestionScroll.visibility= View.GONE
                 }
-
-
             }
         })
     }

@@ -3,6 +3,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -36,7 +37,19 @@ class ProductsActivity : AppCompatActivity (){
 
             onProductSelected ={product ->
                 val productRow = LinearLayout(this)
-                productRow.orientation = LinearLayout.VERTICAL
+                productRow.orientation = LinearLayout.HORIZONTAL
+
+                val productBackground = android.graphics.drawable.GradientDrawable()
+                productBackground.setColor(Color.rgb(110, 78, 58))
+                productBackground.setCornerRadius(12f)
+                productBackground.setStroke(4, Color.GRAY)
+                productRow.background = productBackground
+                productRow.setPadding(16, 16, 16, 16)
+
+
+                val productInfo = LinearLayout(this)
+                productInfo.orientation = LinearLayout.VERTICAL
+
 
                 val productCode =TextView(this)
                 productCode.text = product.code
@@ -53,9 +66,18 @@ class ProductsActivity : AppCompatActivity (){
                     val intent = Intent (Intent.ACTION_VIEW, Uri.parse(product.url))
                     startActivity(intent)
                 }
-                productRow.addView(productCode)
-                productRow.addView(productName)
-                productRow.addView(productUrl)
+                productInfo.addView(productCode)
+                productInfo.addView(productName)
+                productInfo.addView(productUrl)
+                productRow.addView(
+                    productInfo,
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                )
+                val deleteButton= Button(this)
+                deleteButton.text="Delete"
+                deleteButton.setOnClickListener { productsResultList.removeView(productRow) }
+
+                productRow.addView(deleteButton)
                 productsResultList.addView(productRow)
 
 

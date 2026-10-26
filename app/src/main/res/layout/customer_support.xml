@@ -187,12 +187,13 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/messageInput" />
+            app:layout_constraintTop_toBottomOf="@id/messageInput"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/insertedProducts"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="180dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
@@ -201,7 +202,8 @@
             android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productInsert" />
+            app:layout_constraintTop_toBottomOf="@id/productInsert"
+            />
 
         <TextView
             android:id="@+id/departmentLabel"
