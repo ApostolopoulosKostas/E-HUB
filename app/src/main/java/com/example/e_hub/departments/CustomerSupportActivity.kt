@@ -1,5 +1,6 @@
 package com.example.e_hub.departments
 
+import android.health.connect.datatypes.units.Length
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +39,7 @@ class CustomerSupportActivity : AppCompatActivity() {
             onProductSelected = {product ->
                 selectedProduct = product
 
+
                 productSearch.setText("${product.code} - ${product.name}")
                 productSuggestionScroll.visibility = android.view.View.GONE
             })
@@ -48,7 +51,17 @@ class CustomerSupportActivity : AppCompatActivity() {
         val selectDepartment =findViewById<Spinner>(R.id.selectDepartment)
         val departments = listOf("Ψυγεία", "Μανάβικο", "Αποθήκη")
         val insertedProducts =findViewById<RecyclerView>(R.id.insertedProducts)
+
+        // ------ SEND THE REQUEST TO THE DEPARTMENTS HANDLING ------
         val sendRequest= findViewById<Button>(R.id.sendRequest)
+        sendRequest.setOnClickListener {
+            val code = selectedProduct?.code?:productSearch.text.toString()
+
+            if (code.length !=7 ||  !code.all { it.isDigit() })
+                Toast.makeText(this, "ο κωδικός δεν περιέχει 7 ψηφία",
+                    Toast.LENGTH_SHORT).show()
+            return@setOnClickListener
+        }
               //  ---------- DEPARTMENT SELECTION DROPDOWN -----------
         selectDepartment.adapter= ArrayAdapter(
             this,android.R.layout.simple_spinner_item,departments

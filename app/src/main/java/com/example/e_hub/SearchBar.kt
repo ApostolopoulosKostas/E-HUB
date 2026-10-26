@@ -52,6 +52,7 @@ class SearchBar (
                     scope.launch {
                         val products = SupabaseClient.searchProducts(query)
                         products.forEach { product ->
+
                             val suggestion = android.widget.TextView(context)
                             suggestion.setPadding(16,16,16,16)
                             suggestion.setTextColor(Color.BLACK)
