@@ -45,26 +45,32 @@ class CustomerSupportActivity : AppCompatActivity() {
         searchBar.searchListener()
 
         val quantityInput =findViewById<EditText>(R.id.quantityInput)
-        val quantity =quantityInput.text.toString()
+
         val locationInput = findViewById<EditText>(R.id.locationInput)
-        val location = locationInput.text.toString()
+
         val messageInput =findViewById<EditText>(R.id.messageInput)
-        val message = messageInput.text.toString()
+
         val selectDepartment =findViewById<Spinner>(R.id.selectDepartment)
         val departments = listOf("Ψυγεία", "Μανάβικο", "Αποθήκη")
-        val department = selectDepartment.selectedItem.toString()
+
         val insertedProducts =findViewById<RecyclerView>(R.id.insertedProducts)
 
         // ------ SEND THE REQUEST TO THE DEPARTMENTS HANDLING ------
         val sendRequest= findViewById<Button>(R.id.sendRequest)
         sendRequest.setOnClickListener {
-            val code = selectedProduct?.code?:productSearch.text.toString()
-
+            val code = selectedProduct?.code ?: productSearch.text.toString()
+            val name = selectedProduct?.name ?: ""
+            val url = selectedProduct?.url ?: ""
             if (code.length !=7 ||  !code.all { it.isDigit() }){
                 Toast.makeText(this, "ο κωδικός δεν περιέχει 7 ψηφία",
                     Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
+                return@setOnClickListener
             }
+            val quantity =quantityInput.text.toString()
+            val location = locationInput.text.toString()
+            val message = messageInput.text.toString()
+            val department = selectDepartment.selectedItem.toString()
+
         }
               //  ---------- DEPARTMENT SELECTION DROPDOWN -----------
         selectDepartment.adapter= ArrayAdapter(
