@@ -15,8 +15,6 @@ object SupabaseClient {
     ) {
         install(Postgrest)
     }
-    //Allows the function to perform a suspending operation,
-    // such as waiting for a network request, without blocking the coroutine.
 
     suspend fun searchProducts(query :String):List<Product> {
         if (query.all { it.isDigit() }) {
