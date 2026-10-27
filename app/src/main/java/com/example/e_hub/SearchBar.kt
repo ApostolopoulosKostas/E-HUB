@@ -21,24 +21,17 @@ class SearchBar (
     private val context: Context,
     val onProductSelected:(Product) -> Unit
 ) {
-
     fun searchListener() {
-
         searchField.addTextChangedListener(object : TextWatcher {
-
             override fun afterTextChanged(text: Editable?) {
-
             }
-
             override fun beforeTextChanged(
                 text: CharSequence?,
                 start: Int,
                 count: Int,
                 after: Int
             ) {
-
             }
-
             override  fun onTextChanged(
                 text: CharSequence?,
                 start: Int,

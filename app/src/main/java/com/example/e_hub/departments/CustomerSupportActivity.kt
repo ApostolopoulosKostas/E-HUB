@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Spinner
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -61,10 +60,11 @@ class CustomerSupportActivity : AppCompatActivity() {
         sendRequest.setOnClickListener {
             val code = selectedProduct?.code?:productSearch.text.toString()
 
-            if (code.length !=7 ||  !code.all { it.isDigit() })
+            if (code.length !=7 ||  !code.all { it.isDigit() }){
                 Toast.makeText(this, "ο κωδικός δεν περιέχει 7 ψηφία",
                     Toast.LENGTH_SHORT).show()
             return@setOnClickListener
+            }
         }
               //  ---------- DEPARTMENT SELECTION DROPDOWN -----------
         selectDepartment.adapter= ArrayAdapter(
@@ -72,11 +72,5 @@ class CustomerSupportActivity : AppCompatActivity() {
         ).also {
             it.setDropDownViewResource(android.R.layout.simple_spinner_item)
         }
-
     }
-
-
-
-
-
 }
