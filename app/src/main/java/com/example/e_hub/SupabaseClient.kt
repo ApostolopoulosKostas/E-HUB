@@ -1,6 +1,7 @@
 
 package com.example.e_hub
 
+import android.view.PixelCopy
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -33,6 +34,9 @@ object SupabaseClient {
                 mapOf("search_text" to query)
             ).decodeList<Product>()
         }
+    }
+    suspend fun sendRequest (request: Requests){
+        client.from("requests").insert(request)
     }
     
 
