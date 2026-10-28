@@ -1,6 +1,5 @@
 package com.example.e_hub.departments
 
-import android.health.connect.datatypes.units.Length
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -14,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_hub.Product
 import com.example.e_hub.R
+import com.example.e_hub.Requests
 import com.example.e_hub.SearchBar
 
 
@@ -66,10 +66,20 @@ class CustomerSupportActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val quantity =quantityInput.text.toString()
+            val quantity =quantityInput.text.toString().toDoubleOrNull()
             val location = locationInput.text.toString()
             val message = messageInput.text.toString()
             val department = selectDepartment.selectedItem.toString()
+            val request = Requests(
+                code = code,
+                product_name = name,
+                product_url =url,
+                quantity = quantity,
+                location = location,
+                message = message,
+                department=department,
+                requested_by = null
+            )
 
         }
               //  ---------- DEPARTMENT SELECTION DROPDOWN -----------

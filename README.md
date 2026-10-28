@@ -1,254 +1,89 @@
-# I-HUB
+# E-HUB — Supermarket Employee Assistant
 
-**I-HUB** is a private Android application for supermarket employees. It
-provides a shared product lookup tool and helps the Customer Service
-department send product requests to the department responsible for
-fulfilling them.
+## About the Project
 
-I-HUB has its **own online database**. It does not replace, connect to,
-or require access to the supermarket's proprietary software or database.
+**E-HUB is an Android application designed to improve communication and coordination between supermarket employees and departments.**
 
-## Core Features
+In a supermarket, employees sometimes need to request products or items from another department. E-HUB aims to make this process easier by providing a shared product search and a central place to create, send, and manage these requests.
 
-### 1. Shared Product Database and Lookup
+The application is being developed as a private tool for supermarket employees. It uses its own database and operates independently of the supermarket's existing proprietary software and database.
 
-Product lookup is a core feature of I-HUB and must be available in
-**every department**.
+## The Problem E-HUB Aims to Solve
 
--   All departments use the same central product database.
--   Employees can search for a product using its product code.
--   The result displays the product description and a link to its online
-    product page.
--   Product lookup remains easily accessible after an employee selects a
-    department.
--   Product data can initially be imported from a CSV file.
+When an employee needs something from another department, communication can take time and requests can be overlooked or forgotten.
 
-Example CSV structure:
+E-HUB aims to make this process more organized by allowing employees to:
 
-  Κωδικός   Περιγραφή          URL
-  --------- ------------------ -----------------------------
-  1273252   Καρπούζι Εγχώριο   https://example.com/product
+- Find products quickly using a shared product database.
+- Send requests directly to the department responsible for handling them.
+- View requests assigned to their department in one place.
+- Track which requests have been completed.
 
-The example URL is illustrative; actual product URLs will be imported
-with the product data.
+The goal is to reduce unnecessary communication, improve coordination, and help employees handle their daily tasks more efficiently.
 
-### 2. Department-Based Requests
+## How It Will Work
 
-I-HUB supports four departments:
+### 1. Product Search
 
--   **ΕΞΥΠΗΡΕΤΗΣΗ**
--   **ΑΠΟΘΗΚΗ**
--   **ΜΑΝΑΒΙΚΟ**
--   **ΨΥΓΕΙΟ**
+Employees will be able to search for products using their product codes or descriptions. Search results will include the product name, code, and a link to its online product page when available.
 
-Customer Service creates requests and selects the destination
-department. The destination department's employees can view and process
-those requests.
+Product search is intended to be available across the application's departments.
 
-Each request is assigned to **one destination department**. If products
-are needed from different departments, they are created as separate
-requests.
+### 2. Customer Support
 
-Example:
+The Customer Support screen will allow employees to create requests by selecting a product or entering its code manually.
 
--   2 × Καρπούζι Εγχώριο → ΜΑΝΑΒΙΚΟ
--   1 × product from the warehouse → ΑΠΟΘΗΚΗ
+A request can include:
+- Product code and description, when available
+- Requested quantity, including decimal quantities when needed
+- Location information
+- An optional message
+- The destination department
 
-Employees in each destination department should only see requests
-assigned to that department, subject to any authorized administrative
-access.
+The employee can then send the request to the appropriate department.
 
-### 3. Employee Accounts and Department Selection
+### 3. Department Requests
 
-An employee has one account and one consistent username across I-HUB.
-The employee can choose the department they are currently working in
-after logging in and can switch departments when their work changes.
+The receiving department will have a shared list of incoming requests assigned to it.
 
-Department selection does **not** create a new account or change the
-employee's identity.
+Employees will be able to view the requested items and mark requests as completed. This will help the department keep track of outstanding work.
 
-The system must retain accountability across department changes: actions
-should be associated with the employee, the department in which the
-action occurred, and the time of the action. These rules must be
-enforced by the backend/database, not only by the app interface.
+The planned departments are:
 
-## Registration and Account Approval
+- **Customer Support (Εξυπηρέτηση)**
+- **Warehouse (Αποθήκη)**
+- **Produce (Μανάβικο)**
+- **Refrigeration (Ψυγεία)**
 
-### Registration
+### 4. Employee Accounts
 
-The registration screen collects:
+A future stage will introduce employee registration, administrator approval, and login.
 
--   10-digit registration code
--   Username
--   Email
--   Password
--   Password confirmation
+Each employee will have a consistent identity within the application. Employees will be able to select their active department without creating a separate account for each department.
 
-There is no department selection during registration.
-
-### Registration Codes
-
-An administrator manages a set of permanent 10-digit registration-code
-records.
-
--   Each available code can authorize the creation of one account at a
-    time.
--   A code can be assigned to only one active employee account at a
-    time.
--   The code record itself is permanent: it must not be edited or
-    deleted.
--   When an employee leaves, an administrator can deactivate/delete that
-    employee's account and release the code for reuse.
--   Reusing a code must create a **new internal account identity**. It
-    must not merge the new employee with the previous employee's
-    activity history.
-
-The registration code authorizes registration. It is not the employee's
-identity and does not determine their department.
-
-### Approval
-
-New registrations remain **pending** until approved by an administrator.
-Pending accounts cannot log in or use the application.
-
-After approval, employees sign in with their **username and password**.
-
-Passwords must be handled securely by Supabase Authentication. I-HUB
-must never store plaintext passwords.
-
-Because Supabase Authentication normally uses email-based sign-in,
-username-based login must be implemented through a secure backend flow.
-It must not expose account lookup information or store passwords in the
-application database.
-
-## Request Workflow
-
-A request should record, at minimum:
-
--   Request creator
--   Destination department
--   Products and quantities
--   Current status
--   Employee who claimed the request, if any
--   Employee who completed the request, if any
--   Creation, claim, and completion timestamps
-
-Example:
-
-``` text
-Αίτημα #123
-
-Από: Maria
-Προς: ΜΑΝΑΒΙΚΟ
-
-Καρπούζι Εγχώριο
-Κωδικός: 1273252
-Ποσότητα: 2
-
-Κατάσταση: ΝΕΟ
-```
-
-When an eligible employee claims a request, the backend must ensure that
-**only one employee can claim it**. This must be an atomic,
-server-enforced operation to prevent two employees from claiming the
-same request simultaneously.
-
-The system should preserve request history and record who performed each
-important action.
-
-## Department Capabilities
-
-### ΕΞΥΠΗΡΕΤΗΣΗ
-
--   Search the shared product database.
--   Create requests.
--   Select a destination department for each request.
--   View requests it created and their statuses.
--   See who claimed and completed each request, where applicable.
-
-### ΑΠΟΘΗΚΗ
-
--   Search the shared product database.
--   View requests assigned to ΑΠΟΘΗΚΗ.
--   Claim and process eligible requests.
--   Complete requests.
-
-### ΜΑΝΑΒΙΚΟ
-
--   Search the shared product database.
--   View requests assigned to ΜΑΝΑΒΙΚΟ.
--   Claim and process eligible requests.
--   Complete requests.
-
-### ΨΥΓΕΙΟ
-
--   Search the shared product database.
--   View requests assigned to ΨΥΓΕΙΟ.
--   Claim and process eligible requests.
--   Complete requests.
-
-Department permissions must be enforced by the backend. Hiding a button
-or screen in the Android app is not sufficient security.
+The planned account system will help associate requests and completed work with the employees responsible for them.
 
 ## Technology
 
-### Android App
+E-HUB is being developed using:
 
--   Android Studio
--   Java
--   Android Views
--   XML layouts
--   AndroidX / AppCompat
+- **Kotlin** — Android application logic
+- **XML layouts** — Android user interface
+- **Android Studio** — development environment
+- **Supabase and PostgreSQL** — online database and backend services
 
-### Backend and Data
+The backend is designed to be independent of the Android user interface, allowing the database or backend technology to be changed in the future if needed.
 
--   Supabase
--   PostgreSQL
--   Supabase Authentication
--   Supabase Storage, if needed
+## Development Status
 
-## Initial Database Concepts
+E-HUB is currently under active development.
 
-The final schema will be designed before implementation. Expected
-concepts include:
+The shared product search has been implemented and connected to the online product database. The Customer Support request workflow and department request screens are being developed and tested.
 
--   **User profiles** --- internal employee identity, username, email,
-    approval and account status.
--   **Registration codes** --- permanent code records and their current
-    assignment/availability.
--   **Products** --- product code, description and product URL.
--   **Requests** --- creator, destination department, status and
-    timestamps.
--   **Request items** --- products and quantities within a request.
--   **Audit/activity history** --- employee, department, action and
-    timestamp.
+Employee accounts, final access permissions, and production security are planned for later stages. Features described as planned above should not be considered complete until implemented and tested.
 
-Historical activity must remain associated with the original internal
-employee identity, even if that employee's account is later deactivated
-and their registration code is reused.
+## Project Goal
 
-## Private Distribution and Updates
+The goal of E-HUB is to build a practical, easy-to-use tool that helps supermarket employees find products, communicate requests between departments, and organize their daily work.
 
-I-HUB is intended for private distribution and will not initially be
-published on Google Play.
-
-A future version may check for updates and notify employees when a newer
-APK is available. Android may still require user permission or
-confirmation to install an APK distributed outside Google Play.
-
-## Current Development Status
-
-The project began as an Android UI skeleton, including login and
-registration screens. The requirements above describe the intended
-application; they should not be interpreted as features that are already
-implemented.
-
-Development should proceed in stages:
-
-1.  Finalize the requirements and permissions.
-2.  Design the database and backend security rules.
-3.  Implement authentication, registration-code handling and
-    administrator approval.
-4.  Implement the shared product database and product lookup.
-5.  Implement department selection and request workflows.
-6.  Add audit history, testing and private distribution/update support.
+The project is being developed incrementally, with the aim of testing the complete workflow before preparing the application for real-world use.
