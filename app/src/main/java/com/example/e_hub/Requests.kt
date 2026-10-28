@@ -12,6 +12,5 @@ data class Requests (
     val message :String?,
     val department : String,
     val requested_by : String?
-)
-
+    )
 

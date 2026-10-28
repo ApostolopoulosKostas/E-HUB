@@ -56,7 +56,7 @@
             android:layout_marginTop="70dp"
             android:layout_marginEnd="24dp"
             android:background="@android:drawable/edit_text"
-            android:hint="Αναζήτηση με 7ψηφιο κωδικό ή περιγραφή"
+            android:hint="Αναζήτηση με 7ψήφιο κωδικό ή περιγραφή"
             android:inputType="text"
             android:padding="5dp"
             android:singleLine="true"
