@@ -15,6 +15,8 @@ import com.example.e_hub.Product
 import com.example.e_hub.R
 import com.example.e_hub.Requests
 import com.example.e_hub.SearchBar
+import com.example.e_hub.SupabaseClient
+import kotlinx.coroutines.launch
 
 
 class CustomerSupportActivity : AppCompatActivity() {
@@ -80,6 +82,19 @@ class CustomerSupportActivity : AppCompatActivity() {
                 department=department,
                 requested_by = null
             )
+            lifecycleScope.launch {
+                try {
+                    SupabaseClient.sendRequest(request)
+                    Toast.makeText(this@CustomerSupportActivity,"Request sent", Toast.LENGTH_SHORT).show()
+                }catch (e: Exception){
+                    Toast.makeText(
+                        this@CustomerSupportActivity,
+                        "Could not send request:${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
 
         }
               //  ---------- DEPARTMENT SELECTION DROPDOWN -----------
