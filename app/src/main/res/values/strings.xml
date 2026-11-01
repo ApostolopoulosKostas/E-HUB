@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">E-HUB</string>
     <string name="select_department">Επιλέξτε Τμήμα</string>
+    <string name="Εγγραφη">ΕΓΓΡΑΦΗ</string>
 
 
     <string-array name="department_options">
