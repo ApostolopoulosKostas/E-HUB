@@ -1,10 +1,8 @@
-package com.example.e_hub.departments
+package com.example.e_hub
 
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.e_hub.R
-import okio.Buffer
 
 class Administrator  : AppCompatActivity(){
 

@@ -13,7 +13,7 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        //setContentView(R.layout.activity_register)
 
         val employeeNameInput = findViewById<EditText>(R.id.employeeNameInput)
         val emailInput = findViewById<EditText>(R.id.emailInput)
