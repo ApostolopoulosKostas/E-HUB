@@ -1,7 +1,6 @@
 
 package com.example.e_hub
 
-
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -35,10 +34,16 @@ object SupabaseClient {
             ).decodeList<Product>()
         }
     }
-    suspend fun sendRequest (request: Requests){
+    suspend fun sendRequest (request: SendRequests){
         client.from("requests").insert(request)
     }
-    
-
-
+    suspend fun getDepartmentRequests(department : String):List<ReceivedRequests>{
+        return client.from("requests")
+            .select {
+                filter{
+                    eq("department",department)
+                }
+            }
+            .decodeList<ReceivedRequests>()
+    }
 }

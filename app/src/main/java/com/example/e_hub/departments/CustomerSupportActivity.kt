@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_hub.Product
 import com.example.e_hub.R
-import com.example.e_hub.Requests
+import com.example.e_hub.SendRequests
 import com.example.e_hub.SearchBar
 import com.example.e_hub.SupabaseClient
 import kotlinx.coroutines.launch
@@ -72,7 +72,7 @@ class CustomerSupportActivity : AppCompatActivity() {
             val location = locationInput.text.toString()
             val message = messageInput.text.toString()
             val department = selectDepartment.selectedItem.toString()
-            val request = Requests(
+            val request = SendRequests(
                 code = code,
                 product_name = name,
                 product_url =url,

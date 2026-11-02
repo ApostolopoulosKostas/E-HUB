@@ -1,13 +1,15 @@
 package com.example.e_hub.departments
 
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ScrollView
+import android.widget.TextView
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
-import com.example.e_hub.SearchBar
+
+import com.example.e_hub.SupabaseClient
+import kotlinx.coroutines.launch
 
 class FridgeActivity : AppCompatActivity() {
 
@@ -15,27 +17,44 @@ class FridgeActivity : AppCompatActivity() {
         super.onCreate(savedInstantState)
         setContentView(R.layout.fridge)
 
+        val requestsList =findViewById<LinearLayout>(R.id.fridgeIncomingRequestsList)
 
 
-        //   -------------SEARCH BAR -----------------------
-        val productSearch = findViewById<EditText>(R.id.fridgeSearch)//search
-        val productSuggestionScroll = findViewById<ScrollView>(R.id.fridgeSuggestionScroll)
-        val productSuggestionsList = findViewById<LinearLayout>(R.id.fridgeRequestList)
+        lifecycleScope.launch {
+            val  requests = SupabaseClient.getDepartmentRequests("Ψυγεία")
 
-        val searchBar = SearchBar(
-            searchField = productSearch,
-            productSuggestionScroll=productSuggestionScroll,
-            productSuggestionsList =productSuggestionsList,
-            scope =lifecycleScope,
-            context = this,
-            onProductSelected = { }
+            requestsList.removeAllViews()
 
-        )
-        searchBar.searchListener()
+            requests.forEach { request ->
+
+                val requestCard = TextView(this@FridgeActivity)
+
+                requestCard.text = """
+        Κωδικός: ${request.code}
+        Προϊόν: ${request.product_name ?: "Άγνωστο"}
+        Ποσότητα: ${request.quantity ?: "-"}
+        Τοποθεσία: ${request.location ?: "-"}
+        Μήνυμα: ${request.message ?: "-"}
+        Ζητήθηκε από: ${request.requested_by ?: "-"}
+    """.trimIndent()
+
+                requestCard.setPadding(20, 20, 20, 20)
+                requestCard.textSize = 16f
+                requestCard.setTextColor(android.graphics.Color.BLACK)
+                requestCard.setBackgroundColor(android.graphics.Color.WHITE)
+
+                requestsList.addView(requestCard)
+            }
+
+
+        }
+
+
 
 
 
     }
+
 
 
 

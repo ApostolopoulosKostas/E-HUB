@@ -3,7 +3,7 @@ package com.example.e_hub
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Requests (
+data class SendRequests (
     val code : String,
     val product_name : String?,
     val product_url : String?,

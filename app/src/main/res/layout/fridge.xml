@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/brown">
-
 
     <TextView
         android:id="@+id/titleText"
@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         android:text="E-HUB"
         android:textColor="@color/orange"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:textSize="40sp"
-        android:layout_marginTop="40sp"/>
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/fridgeTitle"
         android:layout_width="wrap_content"
@@ -24,53 +25,32 @@
         android:text="Ψυγεία"
         android:textSize="30sp"
         android:textColor="@color/stealblue"
-        app:layout_constraintTop_toBottomOf="@+id/titleText"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"/>
-
-
-    <EditText
-        android:id="@+id/fridgeSearch"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:background="@android:drawable/edit_text"
-        android:hint="Αναζήτηση με κωδικό ή περιγραφή "
-        android:inputType="text"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:singleLine="true"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fridgeTitle"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
-        android:id="@+id/fridgeSuggestionScroll"
+        android:id="@+id/fridgeIncomingRequestsScroll"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:fillViewport="true"
-        android:background="@android:color/white"
-        android:elevation="8dp"
+        android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        app:layout_constraintTop_toBottomOf="@id/fridgeSearch"
-
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/brown"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/fridgeTitle"
+        app:layout_constraintBottom_toTopOf="@id/clearCompletedButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/fridgeRequestList"
+            android:id="@+id/fridgeIncomingRequestsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+
             android:padding="12dp" />
 
     </ScrollView>
@@ -88,9 +68,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
