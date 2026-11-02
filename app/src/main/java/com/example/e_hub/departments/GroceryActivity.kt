@@ -1,8 +1,11 @@
+
 package com.example.e_hub.departments
 
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
@@ -15,42 +18,72 @@ class GroceryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.grocery)
 
-        val requestsList = findViewById<LinearLayout>(
-            R.id.groceryIncomingRequestsList
-        )
+        val requestsList =
+            findViewById<LinearLayout>(R.id.groceryIncomingRequestsList)
 
         lifecycleScope.launch {
             try {
-                val requests = SupabaseClient.getDepartmentRequests("Μανάβικο")
+                val requests =
+                    SupabaseClient.getDepartmentRequests("Μανάβικο")
 
                 requestsList.removeAllViews()
 
                 requests.forEach { request ->
 
-                    val requestCard = TextView(this@GroceryActivity)
+                    val requestCard = LinearLayout(this@GroceryActivity)
+                    requestCard.orientation = LinearLayout.VERTICAL
 
-                    requestCard.text = """
-                        Κωδικός: ${request.code}
-                        Προϊόν: ${request.product_name ?: "Άγνωστο"}
-                        Ποσότητα: ${request.quantity ?: "-"}
-                        Τοποθεσία: ${request.location ?: "-"}
-                        Μήνυμα: ${request.message ?: "-"}
-                        Ζητήθηκε από: ${request.requested_by ?: "-"}
-                    """.trimIndent()
+                    requestCard.setPadding(16, 12, 16, 12)
+                    requestCard.setBackgroundColor(Color.WHITE)
 
-                    requestCard.setPadding(20, 20, 20, 20)
-                    requestCard.textSize = 16f
-                    requestCard.setTextColor(android.graphics.Color.BLACK)
-                    requestCard.setBackgroundColor(android.graphics.Color.WHITE)
+                    // First line: product code and name
+                    val productText = TextView(this@GroceryActivity)
 
-                    requestsList.addView(requestCard)
+                    productText.text =
+                        "${request.code} - ${request.product_name ?: "Άγνωστο"}"
+
+                    productText.textSize = 16f
+                    productText.setTextColor(Color.BLACK)
+
+                    requestCard.addView(productText)
+
+                    // Second line: quantity and location
+                    val detailsText = TextView(this@GroceryActivity)
+
+                    detailsText.text =
+                        "Ποσότητα: ${request.quantity ?: "-"} | Τοποθεσία: ${request.location ?: "-"}"
+
+                    detailsText.textSize = 14f
+                    detailsText.setTextColor(Color.DKGRAY)
+
+                    requestCard.addView(detailsText)
+
+                    // Third line: employee and message
+                    val employeeText = TextView(this@GroceryActivity)
+
+                    employeeText.text =
+                        "Ζητήθηκε από: ${request.requested_by ?: "-"} | Μήνυμα: ${request.message ?: "-"}"
+
+                    employeeText.textSize = 14f
+                    employeeText.setTextColor(Color.DKGRAY)
+
+                    requestCard.addView(employeeText)
+
+                    val cardParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+
+                    cardParams.bottomMargin = 8
+
+                    requestsList.addView(requestCard, cardParams)
                 }
 
             } catch (e: Exception) {
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     this@GroceryActivity,
                     "Error: ${e.message}",
-                    android.widget.Toast.LENGTH_LONG
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }
