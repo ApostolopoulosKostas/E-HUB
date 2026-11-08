@@ -69,6 +69,6 @@ dependencies {
     implementation(libs.supabase.postgrest)
     implementation(libs.ktor.client.android)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
-
+    implementation(libs.supabase.realtime)
 
 }

@@ -6,6 +6,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
+import io.github.jan.supabase.realtime.Realtime
 
 object SupabaseClient {
 
@@ -15,6 +16,7 @@ object SupabaseClient {
         supabaseKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY
     ) {
         install(Postgrest)
+        install(Realtime)
     }
 
     // Finds products by code prefix or by name, returning matching product records.
