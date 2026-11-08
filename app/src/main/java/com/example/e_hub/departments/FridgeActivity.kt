@@ -1,17 +1,18 @@
 
 package com.example.e_hub.departments
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
 import com.example.e_hub.SupabaseClient
 import kotlinx.coroutines.launch
-import android.widget.Button
 
 class FridgeActivity : AppCompatActivity() {
 
@@ -22,7 +23,8 @@ class FridgeActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.fridgeIncomingRequestsList)
 
-        // Fetch fridge requests asynchronously and render each result as a card.
+        // ----- LOAD REQUESTS -----
+
         lifecycleScope.launch {
             try {
                 val requests =
@@ -32,17 +34,17 @@ class FridgeActivity : AppCompatActivity() {
 
                 requests.forEach { request ->
 
-                    // Create the request card
+                    // ----- REQUEST CARD -----
+
                     val requestCard = LinearLayout(this@FridgeActivity)
-                    requestCard.tag =request.completed== true
+                    requestCard.tag = request.completed == true
                     requestCard.orientation = LinearLayout.VERTICAL
 
-
-
-                    requestCard.setPadding(16 ,12, 16, 12)
+                    requestCard.setPadding(16, 12, 16, 12)
                     requestCard.setBackgroundColor(Color.WHITE)
 
-                    // First line: product code and name
+                    // ----- PRODUCT INFORMATION -----
+
                     val productText = TextView(this@FridgeActivity)
 
                     productText.text =
@@ -53,7 +55,8 @@ class FridgeActivity : AppCompatActivity() {
 
                     requestCard.addView(productText)
 
-                    // Second line: quantity and location
+                    // ----- QUANTITY AND LOCATION -----
+
                     val detailsText = TextView(this@FridgeActivity)
 
                     detailsText.text =
@@ -65,7 +68,8 @@ class FridgeActivity : AppCompatActivity() {
 
                     requestCard.addView(detailsText)
 
-                    // Third line: employee and message
+                    // ----- EMPLOYEE AND MESSAGE -----
+
                     val employeeText = TextView(this@FridgeActivity)
 
                     employeeText.text =
@@ -77,12 +81,11 @@ class FridgeActivity : AppCompatActivity() {
 
                     requestCard.addView(employeeText)
 
+                    // ----- COMPLETION STATUS -----
 
-                    //Completion status
-                    // Fourth line: completion status
                     val statusRow = LinearLayout(this@FridgeActivity)
                     statusRow.orientation = LinearLayout.HORIZONTAL
-                    statusRow.gravity = android.view.Gravity.CENTER_VERTICAL
+                    statusRow.gravity = Gravity.CENTER_VERTICAL
 
                     val statusText = TextView(this@FridgeActivity)
                     statusText.textSize = 14f
@@ -92,28 +95,42 @@ class FridgeActivity : AppCompatActivity() {
                     checkButton.text = "✓"
                     checkButton.textSize = 28f
                     checkButton.setPadding(12, 0, 12, 0)
-                   // Current status from supabase
+
+                    // ----- CURRENT REQUEST STATUS -----
+
                     if (request.completed == true) {
+
                         statusText.text = "Ολοκληρώθηκε"
                         statusText.setTextColor(Color.rgb(0, 150, 0))
+
                         checkButton.setTextColor(Color.rgb(0, 180, 0))
                         checkButton.isClickable = false
+
                     } else {
+
                         statusText.text = "Εκκρεμεί"
                         statusText.setTextColor(Color.DKGRAY)
+
                         checkButton.setTextColor(Color.GRAY)
+
+                        // ----- MARK REQUEST AS COMPLETED -----
+
                         checkButton.setOnClickListener {
                             checkButton.isClickable = false
 
                             lifecycleScope.launch {
                                 try {
                                     SupabaseClient.completedRequest(request.id)
+
                                     requestCard.tag = true
+
                                     statusText.text = "Ολοκληρώθηκε"
                                     statusText.setTextColor(Color.rgb(0, 150, 0))
+
                                     checkButton.setTextColor(Color.rgb(0, 180, 0))
 
                                 } catch (e: Exception) {
+
                                     checkButton.isClickable = true
 
                                     Toast.makeText(
@@ -124,13 +141,15 @@ class FridgeActivity : AppCompatActivity() {
                                 }
                             }
                         }
-
                     }
+
                     statusRow.addView(statusText)
                     statusRow.addView(checkButton)
 
                     requestCard.addView(statusRow)
-                    // Add the card to the requests list
+
+                    // ----- ADD CARD TO REQUEST LIST -----
+
                     val cardParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -142,6 +161,7 @@ class FridgeActivity : AppCompatActivity() {
                 }
 
             } catch (e: Exception) {
+
                 Toast.makeText(
                     this@FridgeActivity,
                     "Error: ${e.message}",
@@ -149,16 +169,20 @@ class FridgeActivity : AppCompatActivity() {
                 ).show()
             }
         }
-  // Completed requests button actions and supabae
+
+        // ----- CLEAR COMPLETED REQUESTS -----
 
         val clearCompletedButton =
             findViewById<Button>(R.id.clearCompletedButton)
+
         clearCompletedButton.setOnClickListener {
             lifecycleScope.launch {
                 try {
                     SupabaseClient.clearCompletedRequests("Ψυγεία")
+
                     for (i in requestsList.childCount - 1 downTo 0) {
                         val card = requestsList.getChildAt(i)
+
                         if (card.tag == true) {
                             requestsList.removeViewAt(i)
                         }
@@ -171,6 +195,7 @@ class FridgeActivity : AppCompatActivity() {
                     ).show()
 
                 } catch (e: Exception) {
+
                     Toast.makeText(
                         this@FridgeActivity,
                         "Error: ${e.message}",
@@ -179,7 +204,5 @@ class FridgeActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 }
