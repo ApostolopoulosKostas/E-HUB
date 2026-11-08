@@ -34,7 +34,10 @@ class FridgeActivity : AppCompatActivity() {
 
                     // Create the request card
                     val requestCard = LinearLayout(this@FridgeActivity)
+                    requestCard.tag =request.completed== true
                     requestCard.orientation = LinearLayout.VERTICAL
+
+
 
                     requestCard.setPadding(16 ,12, 16, 12)
                     requestCard.setBackgroundColor(Color.WHITE)
@@ -104,7 +107,8 @@ class FridgeActivity : AppCompatActivity() {
 
                             lifecycleScope.launch {
                                 try {
-                                    SupabaseClient.completeRequest(request.id)
+                                    SupabaseClient.completedRequest(request.id)
+                                    requestCard.tag = true
                                     statusText.text = "Ολοκληρώθηκε"
                                     statusText.setTextColor(Color.rgb(0, 150, 0))
                                     checkButton.setTextColor(Color.rgb(0, 180, 0))
@@ -153,6 +157,12 @@ class FridgeActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     SupabaseClient.clearCompletedRequests("Ψυγεία")
+                    for (i in requestsList.childCount - 1 downTo 0) {
+                        val card = requestsList.getChildAt(i)
+                        if (card.tag == true) {
+                            requestsList.removeViewAt(i)
+                        }
+                    }
 
                     Toast.makeText(
                         this@FridgeActivity,

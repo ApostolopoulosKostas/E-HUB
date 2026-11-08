@@ -55,7 +55,7 @@ object SupabaseClient {
     }
 
 
-    suspend fun completeRequest(id:Long){
+    suspend fun completedRequest(id:Long){
         client.from("requests").update({
             set("completed",true)
         }){
@@ -68,7 +68,7 @@ object SupabaseClient {
         client.from("requests").delete {
             filter{
                 eq("department",department)
-                eq("complete",true)
+                eq("completed",true)
             }
         }
     }
