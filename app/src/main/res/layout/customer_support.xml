@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="24dp">
 
+        <!--  TITLE -->
+
         <TextView
             android:id="@+id/titleText"
             android:layout_width="wrap_content"
@@ -35,6 +37,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleText" />
+
+        <!--  PRODUCT SEARCH -->
 
         <TextView
             android:id="@+id/productSearchLabel"
@@ -66,6 +70,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleText" />
 
+        <!--  PRODUCT SUGGESTIONS -->
+
         <ScrollView
             android:id="@+id/customerSupSuggestionsScroll"
             android:layout_width="0dp"
@@ -87,6 +93,8 @@
                 android:padding="8dp" />
 
         </ScrollView>
+
+        <!--  QUANTITY -->
 
         <TextView
             android:id="@+id/quantityLabel"
@@ -117,6 +125,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/customerSupportSearch" />
 
+        <!--  RAMP / LOCATION -->
+
         <TextView
             android:id="@+id/r_θεση"
             android:layout_width="wrap_content"
@@ -144,6 +154,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/quantityInput"
             app:layout_constraintTop_toTopOf="@id/quantityInput" />
+
+        <!--  MESSAGE -->
 
         <TextView
             android:id="@+id/messageLabel"
@@ -174,36 +186,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/quantityInput" />
 
-        <Button
-            android:id="@+id/productInsert"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
+        <!-- SENT REQUESTS -->
+
+        <TextView
+            android:id="@+id/sentRequestsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/orange"
-            android:text="+ Προσθήκη προϊόντος"
-            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:text="Απεσταλμένα αιτήματα"
+            android:textColor="@color/white"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/messageInput"
-            android:visibility="gone"/>
+            app:layout_constraintTop_toBottomOf="@id/messageInput" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/insertedProducts"
             android:layout_width="0dp"
-            android:layout_height="190dp"
+            android:layout_height="220dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
             android:clipToPadding="false"
             android:padding="4dp"
             android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productInsert"
-            />
+            app:layout_constraintTop_toBottomOf="@id/sentRequestsTitle" />
+
+        <!--  CLEAR COMPLETED -->
+
+        <Button
+            android:id="@+id/clearCompletedRequestsButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="@color/orange"
+            android:text="Καθαρισμός ολοκληρωμένων"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/insertedProducts" />
+
+        <!-- DEPARTMENT SELECTION -->
 
         <TextView
             android:id="@+id/departmentLabel"
@@ -216,7 +245,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/insertedProducts" />
+            app:layout_constraintTop_toBottomOf="@id/clearCompletedRequestsButton" />
 
         <Spinner
             android:id="@+id/selectDepartment"
@@ -230,6 +259,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/departmentLabel"
             app:layout_constraintTop_toBottomOf="@id/departmentLabel" />
+
+        <!--- SEND REQUEST -->
 
         <Button
             android:id="@+id/sendRequest"
