@@ -21,6 +21,7 @@ class FridgeActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.fridgeIncomingRequestsList)
 
+        // Fetch fridge requests asynchronously and render each result as a card.
         lifecycleScope.launch {
             try {
                 val requests =
@@ -71,6 +72,8 @@ class FridgeActivity : AppCompatActivity() {
                     employeeText.setTextColor(Color.DKGRAY)
 
                     requestCard.addView(employeeText)
+
+
 
                     // Add the card to the requests list
                     val cardParams = LinearLayout.LayoutParams(

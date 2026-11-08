@@ -20,11 +20,13 @@ class RegisterActivity : AppCompatActivity() {
         val registrationCodeInput = findViewById<EditText>(R.id.registrationCodeInput)
         val registerButton = findViewById<Button>(R.id.registerButton)
 
+        // Checks the entered values before showing a registration result.
         registerButton.setOnClickListener {
             val employeeName = employeeNameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val registrationCode = registrationCodeInput.text.toString().trim()
 
+            // Stop when any required field is missing.
             if (employeeName.isBlank() || email.isBlank() || registrationCode.isBlank()) {
                 Toast.makeText(this, "Συμπλήρωσε όλα τα πεδία", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener

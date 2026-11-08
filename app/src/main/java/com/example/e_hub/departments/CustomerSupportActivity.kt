@@ -30,6 +30,7 @@ class CustomerSupportActivity : AppCompatActivity() {
         val productSuggestionScroll = findViewById<ScrollView>(R.id.customerSupSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.customerSupSuggestionsList)
         var selectedProduct: Product?=null
+        // Keep the selected product so its code, name, and URL can populate the request.
         val searchBar = SearchBar(
             searchField = productSearch,
             productSuggestionScroll=productSuggestionScroll,
@@ -59,6 +60,7 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         // ------ SEND THE REQUEST TO THE DEPARTMENTS HANDLING ------
         val sendRequest= findViewById<Button>(R.id.sendRequest)
+        // Validate the product code, then send the request without blocking the UI.
         sendRequest.setOnClickListener {
             val code = selectedProduct?.code ?: productSearch.text.toString()
             val name = selectedProduct?.name ?: ""
@@ -82,6 +84,7 @@ class CustomerSupportActivity : AppCompatActivity() {
                 department=department,
                 requested_by = null
             )
+            // Tie the network operation to this Activity's lifecycle and report its result.
             lifecycleScope.launch {
                 try {
                     SupabaseClient.sendRequest(request)

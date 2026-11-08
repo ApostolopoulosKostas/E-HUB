@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Opens the employee registration screen from the sign-up link.
         val registerText = findViewById<TextView>(R.id.registerText)
         registerText.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)

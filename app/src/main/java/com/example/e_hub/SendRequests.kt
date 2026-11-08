@@ -2,6 +2,7 @@ package com.example.e_hub
 
 import kotlinx.serialization.Serializable
 
+// Request fields sent to Supabase when an employee asks a department for a product.
 @Serializable
 data class SendRequests (
     val code : String,

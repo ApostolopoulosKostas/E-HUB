@@ -21,6 +21,7 @@ class GroceryActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.groceryIncomingRequestsList)
 
+        // Fetch grocery requests asynchronously and render each result as a card.
         lifecycleScope.launch {
             try {
                 val requests =

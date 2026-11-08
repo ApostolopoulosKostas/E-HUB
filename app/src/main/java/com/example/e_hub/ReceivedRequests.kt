@@ -2,6 +2,7 @@ package com.example.e_hub
 
 import kotlinx.serialization.Serializable
 
+// Request record read from Supabase, including its status and audit timestamps.
 @Serializable
 data class ReceivedRequests(
     val id: Long,

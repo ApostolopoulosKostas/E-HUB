@@ -21,6 +21,7 @@ class WarehouseActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.warehouseIncomingRequestsList)
 
+        // Fetch warehouse requests asynchronously and render each result as a card.
         lifecycleScope.launch {
             try {
                 val requests =

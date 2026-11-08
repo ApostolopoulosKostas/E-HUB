@@ -12,7 +12,7 @@ class DepartmentsActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.departments)
 
-            // ------------- BUTTON FOR THE DEPARTMENTS------------------
+        // Each button opens the screen for its department or the product catalog.
         val customerSupportButton = findViewById<Button>(R.id.customerSupportButton)
         customerSupportButton.setOnClickListener {
             val intent = Intent(this, CustomerSupportActivity::class.java)

@@ -21,6 +21,7 @@ class SearchBar (
     private val context: Context,
     val onProductSelected:(Product) -> Unit
 ) {
+    // Updates suggestions as the user types and reports selected products to the caller.
     fun searchListener() {
         searchField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {
@@ -39,6 +40,7 @@ class SearchBar (
                 count: Int
             ) {
                 val query = text.toString().trim()
+                // Query Supabase only after four characters to avoid very broad searches.
                 if (query.length >= 4) {
                     productSuggestionsList.removeAllViews()
                     productSuggestionScroll.visibility = View.VISIBLE
