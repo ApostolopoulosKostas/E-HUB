@@ -55,7 +55,7 @@ object SupabaseClient {
     }
 
 
-    suspend fun completedRequest(id:Long){
+    suspend fun completeRequest(id:Long){
         client.from("requests").update({
             set("completed",true)
         }){

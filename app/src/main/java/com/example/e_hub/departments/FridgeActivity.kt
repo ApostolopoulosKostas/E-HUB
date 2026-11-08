@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
 import com.example.e_hub.SupabaseClient
 import kotlinx.coroutines.launch
+import android.widget.Button
 
 class FridgeActivity : AppCompatActivity() {
 
@@ -74,7 +75,57 @@ class FridgeActivity : AppCompatActivity() {
                     requestCard.addView(employeeText)
 
 
+                    //Completion status
+                    // Fourth line: completion status
+                    val statusRow = LinearLayout(this@FridgeActivity)
+                    statusRow.orientation = LinearLayout.HORIZONTAL
+                    statusRow.gravity = android.view.Gravity.CENTER_VERTICAL
 
+                    val statusText = TextView(this@FridgeActivity)
+                    statusText.textSize = 14f
+
+                    val checkButton = TextView(this@FridgeActivity)
+
+                    checkButton.text = "✓"
+                    checkButton.textSize = 28f
+                    checkButton.setPadding(12, 0, 12, 0)
+                   // Current status from supabase
+                    if (request.completed == true) {
+                        statusText.text = "Ολοκληρώθηκε"
+                        statusText.setTextColor(Color.rgb(0, 150, 0))
+                        checkButton.setTextColor(Color.rgb(0, 180, 0))
+                        checkButton.isClickable = false
+                    } else {
+                        statusText.text = "Εκκρεμεί"
+                        statusText.setTextColor(Color.DKGRAY)
+                        checkButton.setTextColor(Color.GRAY)
+                        checkButton.setOnClickListener {
+                            checkButton.isClickable = false
+
+                            lifecycleScope.launch {
+                                try {
+                                    SupabaseClient.completeRequest(request.id)
+                                    statusText.text = "Ολοκληρώθηκε"
+                                    statusText.setTextColor(Color.rgb(0, 150, 0))
+                                    checkButton.setTextColor(Color.rgb(0, 180, 0))
+
+                                } catch (e: Exception) {
+                                    checkButton.isClickable = true
+
+                                    Toast.makeText(
+                                        this@FridgeActivity,
+                                        "Error: ${e.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
+
+                    }
+                    statusRow.addView(statusText)
+                    statusRow.addView(checkButton)
+
+                    requestCard.addView(statusRow)
                     // Add the card to the requests list
                     val cardParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -94,5 +145,31 @@ class FridgeActivity : AppCompatActivity() {
                 ).show()
             }
         }
+  // Completed requests button actions and supabae
+
+        val clearCompletedButton =
+            findViewById<Button>(R.id.clearCompletedButton)
+        clearCompletedButton.setOnClickListener {
+            lifecycleScope.launch {
+                try {
+                    SupabaseClient.clearCompletedRequests("Ψυγεία")
+
+                    Toast.makeText(
+                        this@FridgeActivity,
+                        "Τα ολοκληρωμένα αιτήματα διαγράφηκαν",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@FridgeActivity,
+                        "Error: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+
     }
 }
