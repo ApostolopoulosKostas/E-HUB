@@ -26,11 +26,15 @@ class CustomerSupportActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.customer_support)
 
-        //   -------------SEARCH BAR -----------------------
+
         val productSearch = findViewById<EditText>(R.id.customerSupportSearch)//search
         val productSuggestionScroll = findViewById<ScrollView>(R.id.customerSupSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.customerSupSuggestionsList)
         var selectedProduct: Product?=null
+
+
+
+
         // Keep the selected product so its code, name, and URL can populate the request.
         val searchBar = SearchBar(
             searchField = productSearch,
@@ -38,11 +42,8 @@ class CustomerSupportActivity : AppCompatActivity() {
             productSuggestionsList =productSuggestionsList,
             scope =lifecycleScope,
             context = this,
-
             onProductSelected = {product ->
                 selectedProduct = product
-
-
                 productSearch.setText("${product.code} - ${product.name}")
                 productSuggestionScroll.visibility = android.view.View.GONE
             })
@@ -64,8 +65,15 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         val requests = mutableListOf<ReceivedRequests>()
 
-        val adapter = CustomerSupportAdapter(requests) { request ->
-            deleteRequest(request)
+        val adapter = CustomerSupportAdapter(requests) {
+            request -> deleteRequest(request,)
+        }
+        lifecycleScope.launch {
+            val result = SupabaseClient.getDepartmentRequests()
+            requests.clear() //REMOVE OLD REQUESTS
+            requests.addAll(result) //REFRESH THE CARDS
+            requests.sortBy { it.completed ==true } //SORT THE REQUESTS:PENDING ON TOP COMPLETED BELOW
+            adapter.notifyDataSetChanged()        //REFRESH THE LIST IN CUSTOMER SUPPORT
         }
 
         insertedProducts.adapter = adapter

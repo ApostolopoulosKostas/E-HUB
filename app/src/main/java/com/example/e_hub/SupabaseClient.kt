@@ -46,11 +46,13 @@ object SupabaseClient {
     }
 
     // Loads only the requests assigned to the requested department.
-    suspend fun getDepartmentRequests(department: String): List<ReceivedRequests> {
+    suspend fun getDepartmentRequests(department: String ?=null): List<ReceivedRequests> {
         return client.from("requests")
             .select {
-                filter {
-                    eq("department", department)
+                if (department != null) {
+                    filter {
+                        eq("department", department)
+                    }
                 }
             }
             .decodeList<ReceivedRequests>()

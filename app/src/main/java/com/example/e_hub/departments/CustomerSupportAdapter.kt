@@ -19,7 +19,15 @@ class CustomerSupportAdapter(
         viewType: Int
     ): RequestViewHolder {
         val card = LinearLayout(parent.context)
+        val params = RecyclerView.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        params.setMargins(0, 0, 0, 16)
+        card.layoutParams = params
         return RequestViewHolder(card)
+
     }
 
     override fun onBindViewHolder(
@@ -71,16 +79,26 @@ class CustomerSupportAdapter(
             val container = itemView as LinearLayout
             container.addView(departmentText)
 
+
+
+            productText.textSize =16f
+            productText.setTextColor(Color.BLACK)
+            productText.setTypeface(null,android.graphics.Typeface.BOLD)
+
             container.orientation = LinearLayout.VERTICAL
-            deleteButton.text = "Διαγραφή"
-            container.setPadding(16, 12, 16, 12)
+            container.setPadding(12, 10,12 , 10)
             container.setBackgroundColor(Color.WHITE)
+            deleteButton.text = "Διαγραφή"
 
             container.addView(productText)
             container.addView(detailsText)
             container.addView(employeeText)
             container.addView(statusText)
             container.addView(deleteButton)
+
+
+
+
         }
 
     }
