@@ -66,6 +66,14 @@ object SupabaseClient {
             }
         }
     }
+    suspend fun deleteRequest(id: Long) {
+        client.from("requests").delete {
+            filter {
+                eq("id", id)
+            }
+        }
+    }
+
     suspend fun clearCompletedRequests(department: String){
         client.from("requests").delete {
             filter{

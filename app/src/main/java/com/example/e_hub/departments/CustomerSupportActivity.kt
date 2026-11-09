@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_hub.Product
 import com.example.e_hub.R
+import com.example.e_hub.ReceivedRequests
 import com.example.e_hub.SendRequests
 import com.example.e_hub.SearchBar
 import com.example.e_hub.SupabaseClient
@@ -56,10 +57,26 @@ class CustomerSupportActivity : AppCompatActivity() {
         val selectDepartment =findViewById<Spinner>(R.id.selectDepartment)
         val departments = listOf("Ψυγεία", "Μανάβικο", "Αποθήκη")
 
+
         val insertedProducts =findViewById<RecyclerView>(R.id.insertedProducts)
+        insertedProducts.layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(this)
+
+        val requests = mutableListOf<ReceivedRequests>()
+
+        val adapter = CustomerSupportAdapter(requests) { request ->
+            deleteRequest(request)
+        }
+
+        insertedProducts.adapter = adapter
+
+
 
         // ------ SEND THE REQUEST TO THE DEPARTMENTS HANDLING ------
         val sendRequest= findViewById<Button>(R.id.sendRequest)
+
+
+
         // Validate the product code, then send the request without blocking the UI.
         sendRequest.setOnClickListener {
             val code = selectedProduct?.code ?: productSearch.text.toString()
@@ -107,4 +124,26 @@ class CustomerSupportActivity : AppCompatActivity() {
             it.setDropDownViewResource(android.R.layout.simple_spinner_item)
         }
     }
+    private fun deleteRequest(request: ReceivedRequests) {
+        lifecycleScope.launch {
+            try {
+                SupabaseClient.deleteRequest(request.id)
+
+                Toast.makeText(
+                    this@CustomerSupportActivity,
+                    " Διαγράφηκε",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@CustomerSupportActivity,
+                    "Δεν διαγράφηκε ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    }
+
 }
