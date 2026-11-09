@@ -4,11 +4,14 @@ package com.example.e_hub.departments
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
 import com.example.e_hub.SupabaseClient
@@ -19,6 +22,16 @@ class FridgeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fridge)
+
+        val root = findViewById<View>(R.id.fridgeRootLayout)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+
+            insets
+        }
 
         val requestsList =
             findViewById<LinearLayout>(R.id.fridgeIncomingRequestsList)
