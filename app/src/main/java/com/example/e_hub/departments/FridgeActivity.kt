@@ -25,6 +25,7 @@ class FridgeActivity : AppCompatActivity() {
 
         val root = findViewById<View>(R.id.fridgeRootLayout)
 
+        // ----- KEEP CONTENT CLEAR OF THE SYSTEM BARS -----
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -36,7 +37,7 @@ class FridgeActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.fridgeIncomingRequestsList)
 
-        // ----- LOAD REQUESTS -----
+        // ----- LOAD REQUESTS FOR THIS DEPARTMENT -----
 
         lifecycleScope.launch {
             try {

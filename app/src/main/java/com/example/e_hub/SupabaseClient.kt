@@ -10,7 +10,7 @@ import io.github.jan.supabase.realtime.Realtime
 
 object SupabaseClient {
 
-    // Shared Supabase client configured with the app's build-time credentials.
+    // ----- SHARED SUPABASE CLIENT -----
     val client = createSupabaseClient(
         supabaseUrl = BuildConfig.SUPABASE_URL,
         supabaseKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY
@@ -19,16 +19,16 @@ object SupabaseClient {
         install(Realtime)
     }
 
-    // Finds products by code prefix or by name, returning matching product records.
+    // ----- SEARCH PRODUCTS BY CODE OR NAME -----
     suspend fun searchProducts(query: String): List<Product> {
-        // Numeric searches use a code prefix; text searches use the database RPC.
+        // USE A CODE PREFIX FOR DIGITS; USE THE DATABASE SEARCH FUNCTION FOR TEXT.
         if (query.all { it.isDigit() }) {
             return client.from("products")
                 .select {
                     filter {
                         like("code", "$query%")
                     }
-                    limit(5) // Keep code-prefix suggestions short.
+                    limit(5) // LIMIT CODE SEARCH SUGGESTIONS TO FIVE RESULTS.
                 }
                 .decodeList<Product>()
 
@@ -40,12 +40,12 @@ object SupabaseClient {
         }
     }
 
-    // Persists a new request to the requests table.
+    // ----- INSERT A NEW REQUEST -----
     suspend fun sendRequest(request: SendRequests) {
         client.from("requests").insert(request)
     }
 
-    // Loads only the requests assigned to the requested department.
+    // ----- LOAD REQUESTS, OPTIONALLY FILTERED BY DEPARTMENT -----
     suspend fun getDepartmentRequests(department: String ?=null): List<ReceivedRequests> {
         return client.from("requests")
             .select {
@@ -59,6 +59,7 @@ object SupabaseClient {
     }
 
 
+    // MARK THE REQUEST WITH THIS ID AS COMPLETED IN SUPABASE.
     suspend fun completedRequest(id:Long){
         client.from("requests").update({
             set("completed",true)
@@ -68,6 +69,7 @@ object SupabaseClient {
             }
         }
     }
+    // DELETE THE REQUEST WITH THIS ID FROM SUPABASE.
     suspend fun deleteRequest(id: Long) {
         client.from("requests").delete {
             filter {
@@ -76,6 +78,7 @@ object SupabaseClient {
         }
     }
 
+    // DELETE COMPLETED REQUESTS FOR THE SPECIFIED DEPARTMENT.
     suspend fun clearCompletedRequests(department: String){
         client.from("requests").delete {
             filter{

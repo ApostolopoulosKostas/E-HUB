@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-// Hosts administrator tools such as employee invitations.
+// ----- ADMINISTRATOR SCREEN -----
 class Administrator  : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {

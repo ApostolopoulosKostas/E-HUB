@@ -9,11 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_hub.ReceivedRequests
 
+// ----- BIND REQUEST DATA AND DELETE ACTIONS TO EACH LIST ITEM -----
 class CustomerSupportAdapter(
     private val requests: MutableList<ReceivedRequests>,
     private val onDeleteClick: (ReceivedRequests) -> Unit
 ):
     RecyclerView.Adapter<CustomerSupportAdapter.RequestViewHolder>() {
+    // CREATE A CARD VIEW HOLDER WITH SPACE BETWEEN REQUEST CARDS.
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -30,6 +32,7 @@ class CustomerSupportAdapter(
 
     }
 
+    // FILL A CARD WITH REQUEST DETAILS AND ITS CURRENT COMPLETION STATUS.
     override fun onBindViewHolder(
         holder: RequestViewHolder,
         position: Int
@@ -61,10 +64,12 @@ class CustomerSupportAdapter(
         }
     }
 
+    // TELL THE RECYCLER VIEW HOW MANY REQUEST CARDS TO DISPLAY.
     override fun getItemCount(): Int {
          return requests.size
     }
 
+    // HOLD AND STYLE THE VIEWS USED TO DISPLAY ONE REQUEST.
     class RequestViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 

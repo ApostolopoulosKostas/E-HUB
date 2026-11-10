@@ -12,20 +12,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Opens the employee registration screen from the sign-up link.
+        // ----- OPEN EMPLOYEE REGISTRATION -----
         val registerText = findViewById<TextView>(R.id.registerText)
         registerText.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
 
-        // ----------------TEST    BUTTON---------------------------------------------------
+        // ----- OPEN DEPARTMENT MENU IN TEST MODE -----
         val testModeButton = findViewById<Button>(R.id.testModeButton)
 
         testModeButton.setOnClickListener {
             val intent = Intent(this, DepartmentsActivity::class.java)
             startActivity(intent)
-        //-----------------------------------------------------------------------------------
         }
     }
 }

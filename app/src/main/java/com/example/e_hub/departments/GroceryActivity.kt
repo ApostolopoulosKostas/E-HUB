@@ -25,6 +25,7 @@ class GroceryActivity : AppCompatActivity() {
 
         val root = findViewById<View>(R.id.groceryRootLayout)
 
+        // ----- KEEP CONTENT CLEAR OF THE SYSTEM BARS -----
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
 
             val systemBars = insets.getInsets(
@@ -44,7 +45,7 @@ class GroceryActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.groceryIncomingRequestsList)
 
-        // ----- LOAD REQUESTS -----
+        // ----- LOAD REQUESTS FOR THIS DEPARTMENT -----
 
         lifecycleScope.launch {
             try {

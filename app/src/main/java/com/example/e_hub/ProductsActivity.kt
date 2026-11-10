@@ -20,15 +20,15 @@ class ProductsActivity : AppCompatActivity (){
 
 
 
-             //   -------------SEARCH BAR -----------------------
-        val productSearch = findViewById<EditText>(R.id.productsearch)//search
+             // ----- PRODUCT SEARCH AND SUGGESTIONS -----
+        val productSearch = findViewById<EditText>(R.id.productsearch) // SEARCH FIELD
         val productSuggestionScroll = findViewById<ScrollView>(R.id.productSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.productSuggestionsList)
         val productsResultList = findViewById<LinearLayout>(R.id.productsResultsList)
 
 
 
-        // Selecting a suggestion adds a product card to the results list.
+        // ----- ADD SELECTED PRODUCT TO THE RESULTS LIST -----
         val searchBar = SearchBar(
             searchField = productSearch,
             productSuggestionScroll=productSuggestionScroll,
@@ -63,7 +63,7 @@ class ProductsActivity : AppCompatActivity (){
                 val productUrl = TextView(this)
                 productUrl.text = product.url
                 productUrl.setTextColor(Color.RED)
-                // Opens the product link in a browser or another supporting app.
+                // OPEN THE PRODUCT URL IN ANOTHER APP.
                 productUrl.setOnClickListener {
                     val intent = Intent (Intent.ACTION_VIEW, Uri.parse(product.url))
                     startActivity(intent)
@@ -77,7 +77,7 @@ class ProductsActivity : AppCompatActivity (){
                 )
                 val deleteButton= Button(this)
                 deleteButton.text="Delete"
-                // Removes this card from the current screen; it does not delete the database product.
+                // REMOVE THIS CARD FROM THE CURRENT SCREEN ONLY.
                 deleteButton.setOnClickListener { productsResultList.removeView(productRow) }
 
                 productRow.addView(deleteButton)

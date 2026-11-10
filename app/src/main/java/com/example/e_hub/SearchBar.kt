@@ -21,7 +21,7 @@ class SearchBar (
     private val context: Context,
     val onProductSelected:(Product) -> Unit
 ) {
-    // Updates suggestions as the user types and reports selected products to the caller.
+    // ----- WATCH SEARCH TEXT AND RETURN SELECTED PRODUCTS -----
     fun searchListener() {
         searchField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {
@@ -40,7 +40,7 @@ class SearchBar (
                 count: Int
             ) {
                 val query = text.toString().trim()
-                // Query Supabase only after four characters to avoid very broad searches.
+                // SEARCH SUPABASE AFTER THE USER ENTERS AT LEAST FOUR CHARACTERS.
                 if (query.length >= 4) {
                     productSuggestionsList.removeAllViews()
                     productSuggestionScroll.visibility = View.VISIBLE
@@ -52,7 +52,7 @@ class SearchBar (
                             suggestion.setPadding(16,16,16,16)
                             suggestion.setTextColor(Color.BLACK)
                             suggestion.setTypeface(null, Typeface.BOLD)
-                            //suggestion.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context,R.color.orange))
+                            // OPTIONAL: APPLY A BACKGROUND COLOR TO EACH SUGGESTION.
 
                             suggestion.text = product.code + " \n " + product.name.trim()
 
