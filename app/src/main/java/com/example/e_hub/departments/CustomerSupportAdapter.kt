@@ -40,7 +40,7 @@ class CustomerSupportAdapter(
         val request = requests[position]
 
         holder.deleteButton.setOnClickListener {
-            onDeleteClick(request)
+            onDeleteClick(request) // THE ACTIVITY HANDLES DATABASE DELETION AND LIST UPDATES.
         }
 
         holder.productText.text =

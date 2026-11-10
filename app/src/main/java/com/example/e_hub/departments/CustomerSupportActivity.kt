@@ -74,7 +74,7 @@ class CustomerSupportActivity : AppCompatActivity() {
 
             requests.clear()
             requests.addAll(result)
-            requests.sortBy { it.completed == true }
+            requests.sortBy { it.completed == true } // PENDING REQUESTS SORT BEFORE COMPLETED ONES.
 
             adapter.notifyDataSetChanged()
         }

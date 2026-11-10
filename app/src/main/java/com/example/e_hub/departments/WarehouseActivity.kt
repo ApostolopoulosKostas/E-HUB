@@ -59,7 +59,7 @@ class WarehouseActivity : AppCompatActivity() {
                     // ----- REQUEST CARD -----
 
                     val requestCard = LinearLayout(this@WarehouseActivity)
-                    requestCard.tag = request.completed == true
+                    requestCard.tag = request.completed == true // USED TO REMOVE COMPLETED CARDS FROM THE SCREEN.
                     requestCard.orientation = LinearLayout.VERTICAL
 
                     requestCard.setPadding(16, 12, 16, 12)

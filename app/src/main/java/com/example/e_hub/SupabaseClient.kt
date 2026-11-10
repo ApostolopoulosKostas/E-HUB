@@ -49,6 +49,7 @@ object SupabaseClient {
     suspend fun getDepartmentRequests(department: String ?=null): List<ReceivedRequests> {
         return client.from("requests")
             .select {
+                // NULL MEANS RETURN REQUESTS FROM EVERY DEPARTMENT.
                 if (department != null) {
                     filter {
                         eq("department", department)
