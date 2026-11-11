@@ -10,6 +10,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import io.ktor.client.engine.android.Android
 
 
 class ProductsActivity : AppCompatActivity (){
@@ -82,6 +83,7 @@ class ProductsActivity : AppCompatActivity (){
 
                 productRow.addView(deleteButton)
                 productsResultList.addView(productRow)
+                productSuggestionScroll.visibility = android.view.View.GONE
 
 
 
