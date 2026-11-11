@@ -10,6 +10,8 @@ import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import kotlin.time.Duration.Companion.seconds
 
 object SupabaseClient {
 
@@ -57,6 +59,16 @@ object SupabaseClient {
                 limit(1)
             }
             .decodeSingle<ApkVersion>()    //CONVERTS THE DATABASE RESULT INTO KOTLIN DATA CLASS
+    }
+
+    suspend fun getApkDownloadUrl(): String{
+        val bucket =client.storage.from("ehub-releases")
+        val url = bucket.createSignedUrl(
+            path = "apk-release.apk",
+            expiresIn = 86400.seconds
+        )
+        return url
+
     }
 
     // ----- LOAD REQUESTS, OPTIONALLY FILTERED BY DEPARTMENT -----
