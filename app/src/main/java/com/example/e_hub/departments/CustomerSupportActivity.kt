@@ -1,6 +1,7 @@
 
 package com.example.e_hub.departments
 
+
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -53,9 +54,12 @@ class CustomerSupportActivity : AppCompatActivity() {
         val quantityInput = findViewById<EditText>(R.id.quantityInput)
         val locationInput = findViewById<EditText>(R.id.locationInput)
         val messageInput = findViewById<EditText>(R.id.messageInput)
-
         val selectDepartment = findViewById<Spinner>(R.id.selectDepartment)
         val departments = listOf("Ψυγεία", "Μανάβικο", "Αποθήκη")
+
+
+
+
 
         // ----- REQUEST LIST -----
         val insertedProducts = findViewById<RecyclerView>(R.id.insertedProducts)
@@ -69,15 +73,16 @@ class CustomerSupportActivity : AppCompatActivity() {
         insertedProducts.adapter = adapter
 
         // ----- LOAD REQUESTS -----
-        lifecycleScope.launch {
-            val result = SupabaseClient.getDepartmentRequests()
-
-            requests.clear()
-            requests.addAll(result)
-            requests.sortBy { it.completed == true }
-
-            adapter.notifyDataSetChanged()
-        }
+//        lifecycleScope.launch {
+//            val result = SupabaseClient.getDepartmentRequests()
+//
+//            requests.clear()
+//            requests.addAll(result)
+//            requests.sortBy { it.completed == true }
+//
+//            adapter.notifyDataSetChanged()
+//        }
+        loadRequests()
 
         // ----- SEND REQUEST -----
         val sendRequest = findViewById<Button>(R.id.sendRequest)
@@ -115,6 +120,7 @@ class CustomerSupportActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     SupabaseClient.sendRequest(request)
+                    loadRequests()
                     Toast.makeText(
                         this@CustomerSupportActivity,
                         "Request sent",
@@ -162,6 +168,17 @@ class CustomerSupportActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+        }
+    }
+    private fun loadRequests() {
+        lifecycleScope.launch {
+            val result = SupabaseClient.getDepartmentRequests()
+
+            requests.clear()
+            requests.addAll(result)
+            requests.sortBy { it.completed == true }
+
+            adapter.notifyDataSetChanged()
         }
     }
 }
