@@ -15,9 +15,13 @@ import io.ktor.client.engine.android.Android
 
 class ProductsActivity : AppCompatActivity (){
 
+    private val savedProducts=mutableListOf<Product>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.products)
+
+        savedProducts.addAll(ProductStorage.loadProducts(this))//This retrieves the employee's previously saved products and puts them into savedProducts.
 
 
 
@@ -26,6 +30,11 @@ class ProductsActivity : AppCompatActivity (){
         val productSuggestionScroll = findViewById<ScrollView>(R.id.productSuggestionsScroll)
         val productSuggestionsList = findViewById<LinearLayout>(R.id.productSuggestionsList)
         val productsResultList = findViewById<LinearLayout>(R.id.productsResultsList)
+
+
+        savedProducts.forEach {
+            product -> addProductCard(product,productsResultList)
+        }
 
 
 
@@ -38,61 +47,67 @@ class ProductsActivity : AppCompatActivity (){
             context = this,
 
             onProductSelected ={product ->
-                val productRow = LinearLayout(this)
-                productRow.orientation = LinearLayout.HORIZONTAL
 
-                val productBackground = android.graphics.drawable.GradientDrawable()
-                productBackground.setColor(Color.rgb(110, 78, 58))
-                productBackground.setCornerRadius(12f)
-                productBackground.setStroke(4, Color.GRAY)
-                productRow.background = productBackground
-                productRow.setPadding(16, 16, 16, 16)
+                savedProducts.add(product)
+                ProductStorage.savedProducts(this,savedProducts)
 
 
-                val productInfo = LinearLayout(this)
-                productInfo.orientation = LinearLayout.VERTICAL
+                addProductCard(product,productsResultList)
 
-
-                val productCode =TextView(this)
-                productCode.text = product.code
-                productCode.setTextColor(Color.YELLOW)
-
-                val productName =TextView (this)
-                productName.text = product.name
-                productName.setTextColor(Color.WHITE)
-
-                val productUrl = TextView(this)
-                productUrl.text = product.url
-                productUrl.setTextColor(Color.RED)
-                // OPEN THE PRODUCT URL IN ANOTHER APP.
-                productUrl.setOnClickListener {
-                    val intent = Intent (Intent.ACTION_VIEW, Uri.parse(product.url))
-                    startActivity(intent)
-                }
-                productInfo.addView(productCode)
-                productInfo.addView(productName)
-                productInfo.addView(productUrl)
-                productRow.addView(
-                    productInfo,
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                )
-                val deleteButton= Button(this)
-                deleteButton.text="Delete"
-                // REMOVE THIS CARD FROM THE CURRENT SCREEN ONLY.
-                deleteButton.setOnClickListener { productsResultList.removeView(productRow) }
-
-                productRow.addView(deleteButton)
-                productsResultList.addView(productRow)
                 productSuggestionScroll.visibility = android.view.View.GONE
-
-
-
-
-
-
-
             }
         )
         searchBar.searchListener()
+    }
+    private fun addProductCard(product: Product,productsResultList: LinearLayout){
+        val productRow = LinearLayout(this)
+        productRow.orientation = LinearLayout.HORIZONTAL
+
+        val productBackground = android.graphics.drawable.GradientDrawable()
+        productBackground.setColor(Color.rgb(110, 78, 58))
+        productBackground.setCornerRadius(12f)
+        productBackground.setStroke(4, Color.GRAY)
+        productRow.background = productBackground
+        productRow.setPadding(16, 16, 16, 16)
+
+        val productInfo = LinearLayout(this)
+        productInfo.orientation = LinearLayout.VERTICAL
+
+        val productCode =TextView(this)
+        productCode.text = product.code
+        productCode.setTextColor(Color.YELLOW)
+
+        val productName =TextView (this)
+        productName.text = product.name
+        productName.setTextColor(Color.WHITE)
+
+        val productUrl = TextView(this)
+        productUrl.text = product.url
+        productUrl.setTextColor(Color.RED)
+        // OPEN THE PRODUCT URL IN ANOTHER APP.
+        productUrl.setOnClickListener {
+            val intent = Intent (Intent.ACTION_VIEW, Uri.parse(product.url))
+            startActivity(intent)
+        }
+        productInfo.addView(productCode)
+        productInfo.addView(productName)
+        productInfo.addView(productUrl)
+        productRow.addView(
+            productInfo,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        )
+        val deleteButton= Button(this)
+        deleteButton.text="Delete"
+        // REMOVE THIS CARD FROM THE CURRENT SCREEN ONLY.
+        deleteButton.setOnClickListener { productsResultList.removeView(productRow)
+        savedProducts.remove(product)
+            ProductStorage.savedProducts(this,savedProducts)
+
+        }
+
+        productRow.addView(deleteButton)
+        productsResultList.addView(productRow)
+
+
     }
 }

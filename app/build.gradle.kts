@@ -70,5 +70,7 @@ dependencies {
     implementation(libs.ktor.client.android)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
     implementation(libs.supabase.realtime)
+    implementation("com.google.code.gson:gson:...")
+    implementation("com.google.code.gson:gson:2.13.2")
 
 }
