@@ -68,18 +68,18 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         insertedProducts.adapter = adapter
 
-        // ----- LOAD ALL REQUESTS AND SHOW PENDING ITEMS FIRST -----
+        // ----- LOAD REQUESTS -----
         lifecycleScope.launch {
             val result = SupabaseClient.getDepartmentRequests()
 
             requests.clear()
             requests.addAll(result)
-            requests.sortBy { it.completed == true } // PENDING REQUESTS SORT BEFORE COMPLETED ONES.
+            requests.sortBy { it.completed == true }
 
             adapter.notifyDataSetChanged()
         }
 
-        // ----- VALIDATE AND SEND A REQUEST -----
+        // ----- SEND REQUEST -----
         val sendRequest = findViewById<Button>(R.id.sendRequest)
 
         sendRequest.setOnClickListener {
@@ -130,7 +130,7 @@ class CustomerSupportActivity : AppCompatActivity() {
             }
         }
 
-        // ----- POPULATE THE DEPARTMENT DROPDOWN -----
+        // ----- DEPARTMENT SELECTION -----
         selectDepartment.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
@@ -140,7 +140,7 @@ class CustomerSupportActivity : AppCompatActivity() {
         }
     }
 
-    // ----- DELETE A REQUEST FROM SUPABASE AND THE LIST -----
+    // ----- DELETE REQUEST -----
     private fun deleteRequest(request: ReceivedRequests) {
         lifecycleScope.launch {
             try {
