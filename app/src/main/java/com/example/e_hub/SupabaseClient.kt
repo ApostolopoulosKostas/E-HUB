@@ -1,4 +1,3 @@
-
 package com.example.e_hub
 
 import io.github.jan.supabase.createSupabaseClient
@@ -21,14 +20,14 @@ object SupabaseClient {
 
     // ----- SEARCH PRODUCTS BY CODE OR NAME -----
     suspend fun searchProducts(query: String): List<Product> {
-        // USE A CODE PREFIX FOR DIGITS; USE THE DATABASE SEARCH FUNCTION FOR TEXT.
+
         if (query.all { it.isDigit() }) {
             return client.from("products")
                 .select {
                     filter {
                         like("code", "$query%")
                     }
-                    limit(5) // LIMIT CODE SEARCH SUGGESTIONS TO FIVE RESULTS.
+                    limit(5)
                 }
                 .decodeList<Product>()
 
@@ -46,10 +45,12 @@ object SupabaseClient {
     }
 
     // ----- LOAD REQUESTS, OPTIONALLY FILTERED BY DEPARTMENT -----
-    suspend fun getDepartmentRequests(department: String ?=null): List<ReceivedRequests> {
+    suspend fun getDepartmentRequests(
+        department: String? = null
+    ): List<ReceivedRequests> {
+
         return client.from("requests")
             .select {
-                // NULL MEANS RETURN REQUESTS FROM EVERY DEPARTMENT.
                 if (department != null) {
                     filter {
                         eq("department", department)
@@ -59,18 +60,18 @@ object SupabaseClient {
             .decodeList<ReceivedRequests>()
     }
 
-
-    // MARK THE REQUEST WITH THIS ID AS COMPLETED IN SUPABASE.
-    suspend fun completedRequest(id:Long){
+    // ----- MARK REQUEST AS COMPLETED -----
+    suspend fun completedRequest(id: Long) {
         client.from("requests").update({
-            set("completed",true)
-        }){
-            filter{
-                eq("id",id)
+            set("completed", true)
+        }) {
+            filter {
+                eq("id", id)
             }
         }
     }
-    // DELETE THE REQUEST WITH THIS ID FROM SUPABASE.
+
+    // ----- DELETE ONE REQUEST -----
     suspend fun deleteRequest(id: Long) {
         client.from("requests").delete {
             filter {
@@ -79,14 +80,15 @@ object SupabaseClient {
         }
     }
 
-    // DELETE COMPLETED REQUESTS FOR THE SPECIFIED DEPARTMENT.
-    suspend fun clearCompletedRequests(department: String){
+    // ----- CLEAR COMPLETED REQUESTS -----
+    suspend fun clearCompletedRequests(department: String? = null) {
         client.from("requests").delete {
-            filter{
-                eq("department",department)
-                eq("completed",true)
+            filter {
+                if (department != null) {
+                    eq("department", department)
+                }
+                eq("completed", true)
             }
         }
     }
-
 }

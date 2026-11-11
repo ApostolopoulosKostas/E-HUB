@@ -87,6 +87,31 @@ class CustomerSupportActivity : AppCompatActivity() {
         // ----- SEND REQUEST -----
         val sendRequest = findViewById<Button>(R.id.sendRequest)
 
+        val clearCompletedButton =
+            findViewById<Button>(R.id.clearCompletedRequestsButton)
+
+        clearCompletedButton.setOnClickListener {
+            lifecycleScope.launch {
+                try {
+                    SupabaseClient.clearCompletedRequests()
+                    loadRequests()
+
+                    Toast.makeText(
+                        this@CustomerSupportActivity,
+                        "Completed requests cleared",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@CustomerSupportActivity,
+                        "Could not clear requests: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
         sendRequest.setOnClickListener {
             val code = selectedProduct?.code ?: productSearch.text.toString()
             val name = selectedProduct?.name ?: ""
