@@ -6,6 +6,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
@@ -47,6 +48,15 @@ object SupabaseClient {
     // ----- INSERT A NEW REQUEST -----
     suspend fun sendRequest(request: SendRequests) {
         client.from("requests").insert(request)
+    }
+    // ---- GET LATEST VERSION OF THE APK -----
+    suspend fun getLatestApkVersion(): ApkVersion{
+        return client.from("apk_versions")//database table
+            .select {
+                order("version_code", Order.DESCENDING)
+                limit(1)
+            }
+            .decodeSingle<ApkVersion>()    //CONVERTS THE DATABASE RESULT INTO KOTLIN DATA CLASS
     }
 
     // ----- LOAD REQUESTS, OPTIONALLY FILTERED BY DEPARTMENT -----
