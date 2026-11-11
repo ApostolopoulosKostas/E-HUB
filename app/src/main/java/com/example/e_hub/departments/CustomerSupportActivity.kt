@@ -65,7 +65,6 @@ class CustomerSupportActivity : AppCompatActivity() {
         val insertedProducts = findViewById<RecyclerView>(R.id.insertedProducts)
         insertedProducts.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(this)
-
         adapter = CustomerSupportAdapter(requests) { request ->
             deleteRequest(request)
         }
