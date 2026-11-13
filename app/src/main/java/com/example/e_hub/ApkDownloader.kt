@@ -21,6 +21,8 @@ suspend fun downloadApk(context: Context,url: String){
         val apkBytes =response.body<ByteArray>()//Takes the actual APK data that Supabase sent us and stores it in the variable apkBytes
         //1client.get(url) asks Supabase to send the APK.2 response receives the server's response.3 response.status.isSuccess() checks whether the request succeeded.4 response.body<ByteArray>() reads the APK's binary data. 5apkBytes holds that data temporarily in the phone's memory.
        apkFile.writeBytes(apkBytes)//Take the APK data from memory and write it to the phone as ehub-update.apk
+        if (!apkFile.exists())
+            throw Exception("apk file was not created")
     }
 
 
