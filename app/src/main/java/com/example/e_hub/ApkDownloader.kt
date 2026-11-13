@@ -23,6 +23,9 @@ suspend fun downloadApk(context: Context,url: String){
        apkFile.writeBytes(apkBytes)//Take the APK data from memory and write it to the phone as ehub-update.apk
         if (!apkFile.exists())
             throw Exception("apk file was not created")
+        if (apkFile.length()==0L){
+            throw Exception("Donwload apk is ready")  //verify that the file isn't empty.
+        }
     }
 
 
