@@ -9,6 +9,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.departments.DepartmentsActivity
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AlertDialog
+import java.io.File
+
+private var pendingApkFile: File?=null//it remembers the downloaded APK while the user  visits android settings
 
 class MainActivity : AppCompatActivity() {
 
