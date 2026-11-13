@@ -51,6 +51,23 @@ object ApkDownloader {
     // OPENING ANDROID'S INSTALLATION SCREEN.
     fun installApk(context: Context, apkFile: File) {
 
+        // ------------CHECK IF E-HUB IS ALLOWED TO INSTALL APK FILES.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O &&
+            !context.packageManager.canRequestPackageInstalls()
+        ) {
+            val settingsIntent = Intent(
+                android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES
+            )
+
+            settingsIntent.data =
+                android.net.Uri.parse("package:${context.packageName}")
+
+            context.startActivity(settingsIntent)
+
+            return
+        }
+        //------------------------------------------------------------------------------------
+
         val apkUri = FileProvider.getUriForFile( // FileProvider safely shares files. getUriForFile() creates an address for our APK.
             context,
             "${context.packageName}.fileprovider",
