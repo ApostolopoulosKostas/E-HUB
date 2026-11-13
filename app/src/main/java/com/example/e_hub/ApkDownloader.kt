@@ -12,7 +12,7 @@ import java.io.File
 
 object ApkDownloader{
 
-private val client = HttpClient { Android } //ktor ,CRREATES A REUSABLE HTTP CLIENT
+    private val client = HttpClient(Android) { Android } //ktor ,CRREATES A REUSABLE HTTP CLIENT
 
 suspend fun downloadApk(context: Context,url: String) {
     val apkFile =
@@ -24,10 +24,11 @@ suspend fun downloadApk(context: Context,url: String) {
             response.body<ByteArray>()//Takes the actual APK data that Supabase sent us and stores it in the variable apkBytes
         //1client.get(url) asks Supabase to send the APK.2 response receives the server's response.3 response.status.isSuccess() checks whether the request succeeded.4 response.body<ByteArray>() reads the APK's binary data. 5apkBytes holds that data temporarily in the phone's memory.
         apkFile.writeBytes(apkBytes)//Take the APK data from memory and write it to the phone as ehub-update.apk
-        if (!apkFile.exists())
+        if (!apkFile.exists()) {
             throw Exception("apk file was not created")
-        if (apkFile.length() == 0L) {
-            throw Exception("Donwload apk is ready")  //verify that the file isn't empty. It returns the file size in bytes. - 0L means zero bytes. - If the file has zero bytes, we know there's no APK data to install. - L tells Kotlin that 0 is a Long value, which matches the type returned by length().
+            if (apkFile.length() == 0L) {
+                throw Exception("Donwload apk is ready")  //verify that the file isn't empty. It returns the file size in bytes. - 0L means zero bytes. - If the file has zero bytes, we know there's no APK data to install. - L tells Kotlin that 0 is a Long value, which matches the type returned by length().
+            }
         }
     }
 
