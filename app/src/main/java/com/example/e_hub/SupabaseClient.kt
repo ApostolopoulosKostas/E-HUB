@@ -62,9 +62,9 @@ object SupabaseClient {
     }
 
     suspend fun getApkDownloadUrl(): String{
-        val bucket =client.storage.from("ehub-releases")
+        val bucket =client.storage.from("app-releases")
         val url = bucket.createSignedUrl(
-            path = "apk-release.apk",
+            path = "apk-debug.apk",
             expiresIn = 86400.seconds
         )
         return url
