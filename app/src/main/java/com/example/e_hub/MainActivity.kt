@@ -1,18 +1,18 @@
+
 package com.example.e_hub
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.departments.DepartmentsActivity
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AlertDialog
 import java.io.File
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,10 +28,16 @@ class MainActivity : AppCompatActivity() {
                     ApkDownloader.installApk(this, apkFile)
                     pendingApkFile = null
                 }
+            } else {
+                Toast.makeText(
+                    this,
+                    "Δεν δόθηκε άδεια εγκατάστασης.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
-    override fun onCreate (savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -39,56 +45,79 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val latestVersion = SupabaseClient.getLatestApkVersion()
+
                 // --- COMPARE THE VERSION CODE FROM SUPABASE WITH THE INSTALLED APP VERSION.---
                 val installedVersion = androidx.core.content.pm.PackageInfoCompat
-                    .getLongVersionCode(packageManager.getPackageInfo(packageName,0))
+                    .getLongVersionCode(packageManager.getPackageInfo(packageName, 0))
 
-                if (latestVersion.version_code>installedVersion){
+                if (latestVersion.version_code > installedVersion) {
+
                     // PROMPT THE USER WHEN A NEWER VERSION IS AVAILABLE.
                     AlertDialog.Builder(this@MainActivity)
                         .setTitle("Nέα έκδοση διαθέσιμη")
                         .setMessage(
-                            "Υπάρχει διαθέσιμη έκδοση ${latestVersion.version_name} του E-HUB.n\n"
-                            + "${latestVersion.release_notes?:"Βελτιώσεις και διορθώσεις σφαλμάτων"}"
+                            "Υπάρχει διαθέσιμη έκδοση ${latestVersion.version_name} του E-HUB.\n"
+                                    + "${latestVersion.release_notes ?: "Βελτιώσεις και διορθώσεις σφαλμάτων"}"
                         )
                         .setPositiveButton("Ενημέρωση") { _, _ ->
                             lifecycleScope.launch {
                                 try {
                                     val apkUrl = SupabaseClient.getApkDownloadUrl()
 
+                                    // DOWNLOAD THE APK FROM SUPABASE TO THE PHONE.
+                                    pendingApkFile = ApkDownloader.downloadApk(
+                                        this@MainActivity,
+                                        apkUrl
+                                    )
+
+                                    // INFORM THE USER THAT THE DOWNLOAD IS COMPLETE.
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Η λήψη της ενημέρωσης ολοκληρώθηκε!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
                                     // ----- CHECK INSTALLATION PERMISSION AND CONTINUE THE UPDATE -----
 
                                     // CHECK IF E-HUB IS ALLOWED TO INSTALL APK FILES.
                                     if (packageManager.canRequestPackageInstalls()) {
+
                                         // PERMISSION ALREADY EXISTS, SO OPEN ANDROID'S INSTALLER.
-                                        ApkDownloader.installApk(this@MainActivity, pendingApkFile!!)
+                                        pendingApkFile?.let { apkFile ->
+                                            ApkDownloader.installApk(this@MainActivity, apkFile)
+                                            pendingApkFile = null
+                                        }
+
                                     } else {
+
                                         // PERMISSION IS MISSING, SO PREPARE TO OPEN ANDROID SETTINGS.
                                         val settingsIntent = Intent(
                                             android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES
                                         )
+
                                         // OPEN THE SETTINGS PAGE FOR E-HUB SPECIFICALLY.
                                         settingsIntent.data =
                                             android.net.Uri.parse("package:$packageName")
+
                                         // OPEN SETTINGS THROUGH OUR LAUNCHER.
                                         // THIS ALLOWS E-HUB TO CONTINUE WHEN THE EMPLOYEE RETURNS.
                                         installPermissionLauncher.launch(settingsIntent)
                                     }
+
+                                } catch (e: Exception) {
                                     Toast.makeText(
                                         this@MainActivity,
-                                        "Η λήψη της ενημέρωσης ολοκληρώθηκε!", Toast.LENGTH_LONG)
-                                        .show()
-                                }catch (e: Exception){
-                                    Toast.makeText(
-                                        this@MainActivity,"Αποτυχία λήψης:${e.message}",
+                                        "Αποτυχία λήψης: ${e.message}",
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
                             }
                         }
-                        .setNegativeButton("Αργότερα",null)
+                        .setNegativeButton("Αργότερα", null)
                         .show()
+
                 } else {
+
                     // --- INFORM THE USER WHEN THE INSTALLED VERSION IS CURRENT.---
                     Toast.makeText(
                         this@MainActivity,
@@ -111,7 +140,6 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
 
 
         // ----- OPEN THE EMPLOYEE REGISTRATION SCREEN -----
