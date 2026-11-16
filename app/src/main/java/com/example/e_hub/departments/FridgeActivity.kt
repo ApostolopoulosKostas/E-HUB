@@ -128,7 +128,7 @@ class FridgeActivity : AppCompatActivity() {
 
                             detailsText.text =
                                 "Ποσότητα: ${request.quantity ?: "-"} | " +
-                                        "Τοποθεσία: ${request.location ?: "-"}"
+                                        "Ράμπα: ${request.location ?: "-"}"
 
                             detailsText.textSize = 14f
                             detailsText.setTextColor(Color.DKGRAY)
