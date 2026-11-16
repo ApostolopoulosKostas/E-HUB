@@ -73,6 +73,9 @@ class SearchBar (
                                 productSuggestionsList.addView(suggestion)
 
                                 suggestion.setOnClickListener {
+                                    searchJob?.cancel()
+                                    productSuggestionScroll.visibility = View.GONE
+                                    productSuggestionsList.removeAllViews()
                                     onProductSelected(product)
                                 }
                             }
