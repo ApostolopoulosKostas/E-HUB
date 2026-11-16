@@ -34,7 +34,9 @@ object ApkDownloader {
         // 3. response.status.isSuccess() checks whether the request succeeded.
         // 4. response.body<ByteArray>() reads the APK's binary data.
         // 5. apkBytes holds that data temporarily in the phone's memory.
-
+        if (apkFile.exists()) {
+            apkFile.delete()
+        }
         apkFile.writeBytes(apkBytes) // Take the APK data from memory and write it to the phone as e-hub-update.apk
 
         if (!apkFile.exists()) {
