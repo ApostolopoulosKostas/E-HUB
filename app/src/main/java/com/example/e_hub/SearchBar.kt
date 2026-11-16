@@ -1,3 +1,4 @@
+
 package com.example.e_hub
 
 import android.content.Context
@@ -16,20 +17,21 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.delay
 
-
-class SearchBar (
+class SearchBar(
     private val searchField: EditText,
-    private val productSuggestionScroll : ScrollView,
-    private val productSuggestionsList : LinearLayout,
+    private val productSuggestionScroll: ScrollView,
+    private val productSuggestionsList: LinearLayout,
     private val scope: CoroutineScope,
     private val context: Context,
-    val onProductSelected:(Product) -> Unit
+    val onProductSelected: (Product) -> Unit
 ) {
     private var searchJob: Job? = null
+    private var isSelectingProduct = false
 
     // ----- WATCH SEARCH TEXT AND RETURN SELECTED PRODUCTS -----
     fun searchListener() {
         searchField.addTextChangedListener(object : TextWatcher {
+
             override fun afterTextChanged(text: Editable?) {
             }
 
@@ -47,6 +49,8 @@ class SearchBar (
                 before: Int,
                 count: Int
             ) {
+                if (isSelectingProduct) return
+
                 val query = text.toString().trim()
 
                 // CANCEL THE PREVIOUS SEARCH SO OLD RESULTS CAN'T ARRIVE LATE.
@@ -61,26 +65,37 @@ class SearchBar (
                             val products = SupabaseClient.searchProducts(query)
 
                             productSuggestionsList.removeAllViews()
-                            productSuggestionScroll.visibility = View.VISIBLE
+
+                            if (products.isNotEmpty()) {
+                                productSuggestionScroll.visibility = View.VISIBLE
+                            } else {
+                                productSuggestionScroll.visibility = View.GONE
+                            }
 
                             products.forEach { product ->
                                 val suggestion = android.widget.TextView(context)
                                 suggestion.setPadding(16, 16, 16, 16)
                                 suggestion.setTextColor(Color.BLACK)
                                 suggestion.setTypeface(null, Typeface.BOLD)
-                                suggestion.text = product.code + " \n " + product.name.trim()
+                                suggestion.text =
+                                    product.code + " \n " + product.name.trim()
 
                                 productSuggestionsList.addView(suggestion)
 
                                 suggestion.setOnClickListener {
+                                    isSelectingProduct = true
                                     searchJob?.cancel()
-                                    productSuggestionScroll.visibility = View.GONE
                                     productSuggestionsList.removeAllViews()
+                                    productSuggestionScroll.visibility = View.GONE
+
                                     onProductSelected(product)
+
+                                    isSelectingProduct = false
                                 }
                             }
+
                         } catch (e: CancellationException) {
-                            throw e // NORMAL: A NEWER SEARCH REPLACED THIS ONE.
+                            throw e
                         } catch (e: Exception) {
                             Toast.makeText(
                                 context,
@@ -91,10 +106,9 @@ class SearchBar (
                     }
                 } else {
                     productSuggestionScroll.visibility = View.GONE
+                    productSuggestionsList.removeAllViews()
                 }
             }
         })
     }
 }
-
-
