@@ -61,14 +61,13 @@ object SupabaseClient {
             .decodeSingle<ApkVersion>()    //CONVERTS THE DATABASE RESULT INTO KOTLIN DATA CLASS
     }
 
-    suspend fun getApkDownloadUrl(): String{
-        val bucket =client.storage.from("app-releases")
+    suspend fun getApkDownloadUrl(): String {
+        val bucket = client.storage.from("app-releases")
         val url = bucket.createSignedUrl(
-            path = "app-debug.apk",
+            path = "E-HUB.apk",
             expiresIn = 86400.seconds
         )
         return url
-
     }
 
     // ----- LOAD REQUESTS, OPTIONALLY FILTERED BY DEPARTMENT -----
