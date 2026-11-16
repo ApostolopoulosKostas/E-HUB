@@ -58,9 +58,6 @@ class CustomerSupportActivity : AppCompatActivity() {
         val departments = listOf("Ψυγεία", "Μανάβικο", "Αποθήκη")
 
 
-
-
-
         // ----- REQUEST LIST -----
         val insertedProducts = findViewById<RecyclerView>(R.id.insertedProducts)
         insertedProducts.layoutManager =
@@ -194,15 +191,25 @@ class CustomerSupportActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun loadRequests() {
         lifecycleScope.launch {
-            val result = SupabaseClient.getDepartmentRequests()
+            try {
+                val result = SupabaseClient.getDepartmentRequests()
 
-            requests.clear()
-            requests.addAll(result)
-            requests.sortBy { it.completed == true }
+                requests.clear()
+                requests.addAll(result)
+                requests.sortBy { it.completed == true }
 
-            adapter.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
+
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@CustomerSupportActivity,
+                    "Δεν ήταν δυνατή η φόρτησή των αιτημάτων: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 }
