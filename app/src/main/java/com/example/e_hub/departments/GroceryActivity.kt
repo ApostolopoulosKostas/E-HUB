@@ -12,9 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.e_hub.R
 import com.example.e_hub.SupabaseClient
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GroceryActivity : AppCompatActivity() {
@@ -45,150 +49,159 @@ class GroceryActivity : AppCompatActivity() {
         val requestsList =
             findViewById<LinearLayout>(R.id.groceryIncomingRequestsList)
 
-        // ----- LOAD REQUESTS FOR THIS DEPARTMENT -----
+        // ----- LOAD REQUESTS FOR THIS DEPARTMENT (REFRESHES EVERY 10 SECONDS) -----
 
         lifecycleScope.launch {
-            try {
-                val requests =
-                    SupabaseClient.getDepartmentRequests("Μανάβικο")
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    try {
+                        val requests =
+                            SupabaseClient.getDepartmentRequests("Μανάβικο")
 
-                requestsList.removeAllViews()
+                        requestsList.removeAllViews()
 
-                requests.forEach { request ->
+                        requests.forEach { request ->
 
-                    // ----- REQUEST CARD -----
+                            // ----- REQUEST CARD -----
 
-                    val requestCard = LinearLayout(this@GroceryActivity)
-                    requestCard.tag = request.completed == true // USED TO REMOVE COMPLETED CARDS FROM THE SCREEN.
-                    requestCard.orientation = LinearLayout.VERTICAL
+                            val requestCard = LinearLayout(this@GroceryActivity)
+                            requestCard.tag =
+                                request.completed == true // USED TO REMOVE COMPLETED CARDS FROM THE SCREEN.
+                            requestCard.orientation = LinearLayout.VERTICAL
 
-                    requestCard.setPadding(16, 12, 16, 12)
-                    requestCard.setBackgroundColor(Color.WHITE)
+                            requestCard.setPadding(16, 12, 16, 12)
+                            requestCard.setBackgroundColor(Color.WHITE)
 
-                    // ----- PRODUCT INFORMATION -----
+                            // ----- PRODUCT INFORMATION -----
 
-                    val productText = TextView(this@GroceryActivity)
+                            val productText = TextView(this@GroceryActivity)
 
-                    productText.text =
-                        "${request.code} - ${request.product_name ?: "Άγνωστο"}"
+                            productText.text =
+                                "${request.code} - ${request.product_name ?: "Άγνωστο"}"
 
-                    productText.textSize = 16f
-                    productText.setTextColor(Color.BLACK)
+                            productText.textSize = 16f
+                            productText.setTextColor(Color.BLACK)
 
-                    requestCard.addView(productText)
+                            requestCard.addView(productText)
 
-                    // ----- QUANTITY AND LOCATION -----
+                            // ----- QUANTITY AND LOCATION -----
 
-                    val detailsText = TextView(this@GroceryActivity)
+                            val detailsText = TextView(this@GroceryActivity)
 
-                    detailsText.text =
-                        "Ποσότητα: ${request.quantity ?: "-"} | " +
-                                "Τοποθεσία: ${request.location ?: "-"}"
+                            detailsText.text =
+                                "Ποσότητα: ${request.quantity ?: "-"} | " +
+                                        "Τοποθεσία: ${request.location ?: "-"}"
 
-                    detailsText.textSize = 14f
-                    detailsText.setTextColor(Color.DKGRAY)
+                            detailsText.textSize = 14f
+                            detailsText.setTextColor(Color.DKGRAY)
 
-                    requestCard.addView(detailsText)
+                            requestCard.addView(detailsText)
 
-                    // ----- EMPLOYEE AND MESSAGE -----
+                            // ----- EMPLOYEE AND MESSAGE -----
 
-                    val employeeText = TextView(this@GroceryActivity)
+                            val employeeText = TextView(this@GroceryActivity)
 
-                    employeeText.text =
-                        "Ζητήθηκε από: ${request.requested_by ?: "-"} | " +
-                                "Μήνυμα: ${request.message ?: "-"}"
+                            employeeText.text =
+                                "Ζητήθηκε από: ${request.requested_by ?: "-"} | " +
+                                        "Μήνυμα: ${request.message ?: "-"}"
 
-                    employeeText.textSize = 14f
-                    employeeText.setTextColor(Color.DKGRAY)
+                            employeeText.textSize = 14f
+                            employeeText.setTextColor(Color.DKGRAY)
 
-                    requestCard.addView(employeeText)
+                            requestCard.addView(employeeText)
 
-                    // ----- COMPLETION STATUS -----
+                            // ----- COMPLETION STATUS -----
 
-                    val statusRow = LinearLayout(this@GroceryActivity)
-                    statusRow.orientation = LinearLayout.HORIZONTAL
-                    statusRow.gravity = Gravity.CENTER_VERTICAL
+                            val statusRow = LinearLayout(this@GroceryActivity)
+                            statusRow.orientation = LinearLayout.HORIZONTAL
+                            statusRow.gravity = Gravity.CENTER_VERTICAL
 
-                    val statusText = TextView(this@GroceryActivity)
-                    statusText.textSize = 14f
+                            val statusText = TextView(this@GroceryActivity)
+                            statusText.textSize = 14f
 
-                    val checkButton = TextView(this@GroceryActivity)
+                            val checkButton = TextView(this@GroceryActivity)
 
-                    checkButton.text = "✓"
-                    checkButton.textSize = 28f
-                    checkButton.setPadding(12, 0, 12, 0)
+                            checkButton.text = "✓"
+                            checkButton.textSize = 28f
+                            checkButton.setPadding(12, 0, 12, 0)
 
-                    // ----- CURRENT REQUEST STATUS -----
+                            // ----- CURRENT REQUEST STATUS -----
 
-                    if (request.completed == true) {
+                            if (request.completed == true) {
 
-                        statusText.text = "Ολοκληρώθηκε"
-                        statusText.setTextColor(Color.rgb(0, 150, 0))
+                                statusText.text = "Ολοκληρώθηκε"
+                                statusText.setTextColor(Color.rgb(0, 150, 0))
 
-                        checkButton.setTextColor(Color.rgb(0, 180, 0))
-                        checkButton.isClickable = false
+                                checkButton.setTextColor(Color.rgb(0, 180, 0))
+                                checkButton.isClickable = false
 
-                    } else {
+                            } else {
 
-                        statusText.text = "Εκκρεμεί"
-                        statusText.setTextColor(Color.DKGRAY)
+                                statusText.text = "Εκκρεμεί"
+                                statusText.setTextColor(Color.DKGRAY)
 
-                        checkButton.setTextColor(Color.GRAY)
+                                checkButton.setTextColor(Color.GRAY)
 
-                        // ----- MARK REQUEST AS COMPLETED -----
+                                // ----- MARK REQUEST AS COMPLETED -----
 
-                        checkButton.setOnClickListener {
-                            checkButton.isClickable = false
+                                checkButton.setOnClickListener {
+                                    checkButton.isClickable = false
 
-                            lifecycleScope.launch {
-                                try {
-                                    SupabaseClient.completedRequest(request.id)
+                                    lifecycleScope.launch {
+                                        try {
+                                            SupabaseClient.completedRequest(request.id)
 
-                                    requestCard.tag = true
+                                            requestCard.tag = true
 
-                                    statusText.text = "Ολοκληρώθηκε"
-                                    statusText.setTextColor(Color.rgb(0, 150, 0))
+                                            statusText.text = "Ολοκληρώθηκε"
+                                            statusText.setTextColor(Color.rgb(0, 150, 0))
 
-                                    checkButton.setTextColor(Color.rgb(0, 180, 0))
+                                            checkButton.setTextColor(Color.rgb(0, 180, 0))
 
-                                } catch (e: Exception) {
+                                        } catch (e: Exception) {
 
-                                    checkButton.isClickable = true
+                                            checkButton.isClickable = true
 
-                                    Toast.makeText(
-                                        this@GroceryActivity,
-                                        "Error: ${e.message}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                            Toast.makeText(
+                                                this@GroceryActivity,
+                                                "Δεν ήταν δυνατή η ενημέρωση του αιτήματος. Δοκίμασε ξανά.",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
                                 }
                             }
+
+                            statusRow.addView(statusText)
+                            statusRow.addView(checkButton)
+
+                            requestCard.addView(statusRow)
+
+                            // ----- ADD CARD TO REQUEST LIST -----
+
+                            val cardParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+
+                            cardParams.bottomMargin = 8
+
+                            requestsList.addView(requestCard, cardParams)
                         }
+
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+
+                        Toast.makeText(
+                            this@GroceryActivity,
+                            "Δεν ήταν δυνατή η φόρτωση των αιτημάτων. Έλεγξε τη σύνδεση.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
-                    statusRow.addView(statusText)
-                    statusRow.addView(checkButton)
-
-                    requestCard.addView(statusRow)
-
-                    // ----- ADD CARD TO REQUEST LIST -----
-
-                    val cardParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-
-                    cardParams.bottomMargin = 8
-
-                    requestsList.addView(requestCard, cardParams)
+                    delay(10_000) // ΠΕΡΙΜΕΝΕΙ 10 ΔΕΥΤΕΡΟΛΕΠΤΑ ΠΡΙΝ ΖΗΤΗΣΕΙ ΞΑΝΑ
                 }
-
-            } catch (e: Exception) {
-
-                Toast.makeText(
-                    this@GroceryActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
             }
         }
 
@@ -220,7 +233,7 @@ class GroceryActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@GroceryActivity,
-                        "Error: ${e.message}",
+                        "Δεν ήταν δυνατή η διαγραφή των ολοκληρωμένων αιτημάτων.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
