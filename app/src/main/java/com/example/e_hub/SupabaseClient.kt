@@ -84,6 +84,8 @@ object SupabaseClient {
                 }
             }
             .decodeList<ReceivedRequests>()
+            // PENDING FIRST, COMPLETED LAST. OLDEST REQUEST ON TOP IN EACH GROUP.
+            .sortedWith(compareBy<ReceivedRequests>({ it.completed == true }, { it.id }))
     }
 
     // ----- MARK REQUEST AS COMPLETED -----

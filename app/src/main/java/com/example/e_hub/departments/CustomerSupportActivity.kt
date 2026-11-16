@@ -20,6 +20,10 @@ import com.example.e_hub.SendRequests
 import com.example.e_hub.SearchBar
 import com.example.e_hub.SupabaseClient
 import kotlinx.coroutines.launch
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 
 class CustomerSupportActivity : AppCompatActivity() {
 
@@ -68,17 +72,15 @@ class CustomerSupportActivity : AppCompatActivity() {
 
         insertedProducts.adapter = adapter
 
-        // ----- LOAD REQUESTS -----
-//        lifecycleScope.launch {
-//            val result = SupabaseClient.getDepartmentRequests()
-//
-//            requests.clear()
-//            requests.addAll(result)
-//            requests.sortBy { it.completed == true }
-//
-//            adapter.notifyDataSetChanged()
-//        }
-        loadRequests()
+        // ----- LOAD REQUESTS (REFRESHES EVERY 10 SECONDS) -----
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    loadRequests()
+                    delay(10_000)
+                }
+            }
+        }
 
         // ----- SEND REQUEST -----
         val sendRequest = findViewById<Button>(R.id.sendRequest)
@@ -192,24 +194,23 @@ class CustomerSupportActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadRequests() {
-        lifecycleScope.launch {
-            try {
-                val result = SupabaseClient.getDepartmentRequests()
+    private suspend fun loadRequests() {
+        try {
+            val result = SupabaseClient.getDepartmentRequests()
 
-                requests.clear()
-                requests.addAll(result)
-                requests.sortBy { it.completed == true }
+            requests.clear()
+            requests.addAll(result)
 
-                adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
 
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@CustomerSupportActivity,
-                    "Δεν ήταν δυνατή η φόρτησή των αιτημάτων: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Toast.makeText(
+                this@CustomerSupportActivity,
+                "Δεν ήταν δυνατή η φόρτωση των αιτημάτων. Έλεγξε τη σύνδεση.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 }
