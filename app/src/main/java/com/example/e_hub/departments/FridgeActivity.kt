@@ -1,4 +1,3 @@
-
 package com.example.e_hub.departments
 
 import android.graphics.Color
@@ -75,7 +74,7 @@ class FridgeActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@FridgeActivity,
-                        "Error: ${e.message}",
+                        "Δεν ήταν δυνατή η διαγραφή των ολοκληρωμένων αιτημάτων.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -213,7 +212,7 @@ class FridgeActivity : AppCompatActivity() {
 
                                             Toast.makeText(
                                                 this@FridgeActivity,
-                                                "Error: ${e.message}",
+                                                "Δεν ήταν δυνατή η ενημέρωση του αιτήματος. Δοκίμασε ξανά.",
                                                 Toast.LENGTH_LONG
                                             ).show()
                                         }
@@ -245,7 +244,7 @@ class FridgeActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this@FridgeActivity,
-                            "Error: ${e.message}",
+                            "Δεν ήταν δυνατή η φόρτωση των αιτημάτων. Έλεγξε τη σύνδεση.",
                             Toast.LENGTH_LONG
                         ).show()
                     }

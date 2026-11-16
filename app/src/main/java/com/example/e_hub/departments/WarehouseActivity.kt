@@ -163,7 +163,7 @@ class WarehouseActivity : AppCompatActivity() {
 
                                             Toast.makeText(
                                                 this@WarehouseActivity,
-                                                "Error: ${e.message}",
+                                                "Δεν ήταν δυνατή η ενημέρωση του αιτήματος. Δοκίμασε ξανά.",
                                                 Toast.LENGTH_LONG
                                             ).show()
                                         }
@@ -203,6 +203,7 @@ class WarehouseActivity : AppCompatActivity() {
                 }
             }
         }
+
         // ----- CLEAR COMPLETED REQUESTS -----
 
         val clearCompletedButton =
@@ -231,7 +232,7 @@ class WarehouseActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@WarehouseActivity,
-                        "Error: ${e.message}",
+                        "Δεν ήταν δυνατή η διαγραφή των ολοκληρωμένων αιτημάτων.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
