@@ -1,4 +1,3 @@
-
 package com.example.e_hub.departments
 
 import android.graphics.Color
@@ -15,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.e_hub.R
 import com.example.e_hub.SupabaseClient
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class WarehouseActivity : AppCompatActivity() {
@@ -48,150 +51,158 @@ class WarehouseActivity : AppCompatActivity() {
         // ----- LOAD REQUESTS FOR THIS DEPARTMENT -----
 
         lifecycleScope.launch {
-            try {
-                val requests =
-                    SupabaseClient.getDepartmentRequests("Αποθήκη")
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    try {
+                        val requests =
+                            SupabaseClient.getDepartmentRequests("Αποθήκη")
 
-                requestsList.removeAllViews()
+                        requestsList.removeAllViews()
 
-                requests.forEach { request ->
+                        requests.forEach { request ->
 
-                    // ----- REQUEST CARD -----
+                            // ----- REQUEST CARD -----
 
-                    val requestCard = LinearLayout(this@WarehouseActivity)
-                    requestCard.tag = request.completed == true // USED TO REMOVE COMPLETED CARDS FROM THE SCREEN.
-                    requestCard.orientation = LinearLayout.VERTICAL
+                            val requestCard = LinearLayout(this@WarehouseActivity)
+                            requestCard.tag =
+                                request.completed == true // USED TO REMOVE COMPLETED CARDS FROM THE SCREEN.
+                            requestCard.orientation = LinearLayout.VERTICAL
 
-                    requestCard.setPadding(16, 12, 16, 12)
-                    requestCard.setBackgroundColor(Color.WHITE)
+                            requestCard.setPadding(16, 12, 16, 12)
+                            requestCard.setBackgroundColor(Color.WHITE)
 
-                    // ----- PRODUCT INFORMATION -----
+                            // ----- PRODUCT INFORMATION -----
 
-                    val productText = TextView(this@WarehouseActivity)
+                            val productText = TextView(this@WarehouseActivity)
 
-                    productText.text =
-                        "${request.code} - ${request.product_name ?: "Άγνωστο"}"
+                            productText.text =
+                                "${request.code} - ${request.product_name ?: "Άγνωστο"}"
 
-                    productText.textSize = 16f
-                    productText.setTextColor(Color.BLACK)
+                            productText.textSize = 16f
+                            productText.setTextColor(Color.BLACK)
 
-                    requestCard.addView(productText)
+                            requestCard.addView(productText)
 
-                    // ----- QUANTITY AND LOCATION -----
+                            // ----- QUANTITY AND LOCATION -----
 
-                    val detailsText = TextView(this@WarehouseActivity)
+                            val detailsText = TextView(this@WarehouseActivity)
 
-                    detailsText.text =
-                        "Ποσότητα: ${request.quantity ?: "-"} | " +
-                                "Τοποθεσία: ${request.location ?: "-"}"
+                            detailsText.text =
+                                "Ποσότητα: ${request.quantity ?: "-"} | " +
+                                        "Τοποθεσία: ${request.location ?: "-"}"
 
-                    detailsText.textSize = 14f
-                    detailsText.setTextColor(Color.DKGRAY)
+                            detailsText.textSize = 14f
+                            detailsText.setTextColor(Color.DKGRAY)
 
-                    requestCard.addView(detailsText)
+                            requestCard.addView(detailsText)
 
-                    // ----- EMPLOYEE AND MESSAGE -----
+                            // ----- EMPLOYEE AND MESSAGE -----
 
-                    val employeeText = TextView(this@WarehouseActivity)
+                            val employeeText = TextView(this@WarehouseActivity)
 
-                    employeeText.text =
-                        "Ζητήθηκε από: ${request.requested_by ?: "-"} | " +
-                                "Μήνυμα: ${request.message ?: "-"}"
+                            employeeText.text =
+                                "Ζητήθηκε από: ${request.requested_by ?: "-"} | " +
+                                        "Μήνυμα: ${request.message ?: "-"}"
 
-                    employeeText.textSize = 14f
-                    employeeText.setTextColor(Color.DKGRAY)
+                            employeeText.textSize = 14f
+                            employeeText.setTextColor(Color.DKGRAY)
 
-                    requestCard.addView(employeeText)
+                            requestCard.addView(employeeText)
 
-                    // ----- COMPLETION STATUS -----
+                            // ----- COMPLETION STATUS -----
 
-                    val statusRow = LinearLayout(this@WarehouseActivity)
-                    statusRow.orientation = LinearLayout.HORIZONTAL
-                    statusRow.gravity = Gravity.CENTER_VERTICAL
+                            val statusRow = LinearLayout(this@WarehouseActivity)
+                            statusRow.orientation = LinearLayout.HORIZONTAL
+                            statusRow.gravity = Gravity.CENTER_VERTICAL
 
-                    val statusText = TextView(this@WarehouseActivity)
-                    statusText.textSize = 14f
+                            val statusText = TextView(this@WarehouseActivity)
+                            statusText.textSize = 14f
 
-                    val checkButton = TextView(this@WarehouseActivity)
+                            val checkButton = TextView(this@WarehouseActivity)
 
-                    checkButton.text = "✓"
-                    checkButton.textSize = 28f
-                    checkButton.setPadding(12, 0, 12, 0)
+                            checkButton.text = "✓"
+                            checkButton.textSize = 28f
+                            checkButton.setPadding(12, 0, 12, 0)
 
-                    // ----- CURRENT REQUEST STATUS -----
+                            // ----- CURRENT REQUEST STATUS -----
 
-                    if (request.completed == true) {
+                            if (request.completed == true) {
 
-                        statusText.text = "Ολοκληρώθηκε"
-                        statusText.setTextColor(Color.rgb(0, 150, 0))
+                                statusText.text = "Ολοκληρώθηκε"
+                                statusText.setTextColor(Color.rgb(0, 150, 0))
 
-                        checkButton.setTextColor(Color.rgb(0, 180, 0))
-                        checkButton.isClickable = false
+                                checkButton.setTextColor(Color.rgb(0, 180, 0))
+                                checkButton.isClickable = false
 
-                    } else {
+                            } else {
 
-                        statusText.text = "Εκκρεμεί"
-                        statusText.setTextColor(Color.DKGRAY)
+                                statusText.text = "Εκκρεμεί"
+                                statusText.setTextColor(Color.DKGRAY)
 
-                        checkButton.setTextColor(Color.GRAY)
+                                checkButton.setTextColor(Color.GRAY)
 
-                        // ----- MARK REQUEST AS COMPLETED -----
+                                // ----- MARK REQUEST AS COMPLETED -----
 
-                        checkButton.setOnClickListener {
-                            checkButton.isClickable = false
+                                checkButton.setOnClickListener {
+                                    checkButton.isClickable = false
 
-                            lifecycleScope.launch {
-                                try {
-                                    SupabaseClient.completedRequest(request.id)
+                                    lifecycleScope.launch {
+                                        try {
+                                            SupabaseClient.completedRequest(request.id)
 
-                                    requestCard.tag = true
+                                            requestCard.tag = true
 
-                                    statusText.text = "Ολοκληρώθηκε"
-                                    statusText.setTextColor(Color.rgb(0, 150, 0))
+                                            statusText.text = "Ολοκληρώθηκε"
+                                            statusText.setTextColor(Color.rgb(0, 150, 0))
 
-                                    checkButton.setTextColor(Color.rgb(0, 180, 0))
+                                            checkButton.setTextColor(Color.rgb(0, 180, 0))
 
-                                } catch (e: Exception) {
+                                        } catch (e: Exception) {
 
-                                    checkButton.isClickable = true
+                                            checkButton.isClickable = true
 
-                                    Toast.makeText(
-                                        this@WarehouseActivity,
-                                        "Error: ${e.message}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                            Toast.makeText(
+                                                this@WarehouseActivity,
+                                                "Error: ${e.message}",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
                                 }
                             }
+
+                            statusRow.addView(statusText)
+                            statusRow.addView(checkButton)
+
+                            requestCard.addView(statusRow)
+
+                            // ----- ADD CARD TO REQUEST LIST -----
+
+                            val cardParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+
+                            cardParams.bottomMargin = 8
+
+                            requestsList.addView(requestCard, cardParams)
                         }
+
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+
+                        Toast.makeText(
+                            this@WarehouseActivity,
+                            "Δεν ήταν δυνατή η φόρτωση των αιτημάτων. Έλεγξε τη σύνδεση.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
-                    statusRow.addView(statusText)
-                    statusRow.addView(checkButton)
-
-                    requestCard.addView(statusRow)
-
-                    // ----- ADD CARD TO REQUEST LIST -----
-
-                    val cardParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-
-                    cardParams.bottomMargin = 8
-
-                    requestsList.addView(requestCard, cardParams)
+                    delay(10_000)
                 }
-
-            } catch (e: Exception) {
-
-                Toast.makeText(
-                    this@WarehouseActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
             }
         }
-
         // ----- CLEAR COMPLETED REQUESTS -----
 
         val clearCompletedButton =
