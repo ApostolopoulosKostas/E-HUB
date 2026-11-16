@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                                 try {
                                     val apkUrl = SupabaseClient.getApkDownloadUrl()
 
+
                                     // DOWNLOAD THE APK FROM SUPABASE TO THE PHONE.
                                     pendingApkFile = ApkDownloader.downloadApk(
                                         this@MainActivity,
