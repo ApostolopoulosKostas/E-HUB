@@ -9,8 +9,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.delay
 
 
 class SearchBar (
@@ -21,11 +25,14 @@ class SearchBar (
     private val context: Context,
     val onProductSelected:(Product) -> Unit
 ) {
+    private var searchJob: Job? = null
+
     // ----- WATCH SEARCH TEXT AND RETURN SELECTED PRODUCTS -----
     fun searchListener() {
         searchField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {
             }
+
             override fun beforeTextChanged(
                 text: CharSequence?,
                 start: Int,
@@ -33,45 +40,58 @@ class SearchBar (
                 after: Int
             ) {
             }
-            override  fun onTextChanged(
+
+            override fun onTextChanged(
                 text: CharSequence?,
                 start: Int,
                 before: Int,
                 count: Int
             ) {
                 val query = text.toString().trim()
-                // SEARCH SUPABASE AFTER THE USER ENTERS AT LEAST FOUR CHARACTERS.
+
+                // CANCEL THE PREVIOUS SEARCH SO OLD RESULTS CAN'T ARRIVE LATE.
+                searchJob?.cancel()
+
                 if (query.length >= 4) {
-                    productSuggestionsList.removeAllViews()
-                    productSuggestionScroll.visibility = View.VISIBLE
-                    scope.launch {
-                        val products = SupabaseClient.searchProducts(query)
-                        products.forEach { product ->
+                    searchJob = scope.launch {
+                        try {
+                            // WAIT A MOMENT; IF THE USER KEEPS TYPING, THIS GETS CANCELLED.
+                            delay(300)
 
-                            val suggestion = android.widget.TextView(context)
-                            suggestion.setPadding(16,16,16,16)
-                            suggestion.setTextColor(Color.BLACK)
-                            suggestion.setTypeface(null, Typeface.BOLD)
-                            // OPTIONAL: APPLY A BACKGROUND COLOR TO EACH SUGGESTION.
+                            val products = SupabaseClient.searchProducts(query)
 
-                            suggestion.text = product.code + " \n " + product.name.trim()
+                            productSuggestionsList.removeAllViews()
+                            productSuggestionScroll.visibility = View.VISIBLE
 
+                            products.forEach { product ->
+                                val suggestion = android.widget.TextView(context)
+                                suggestion.setPadding(16, 16, 16, 16)
+                                suggestion.setTextColor(Color.BLACK)
+                                suggestion.setTypeface(null, Typeface.BOLD)
+                                suggestion.text = product.code + " \n " + product.name.trim()
 
-                            productSuggestionsList.addView(suggestion)
+                                productSuggestionsList.addView(suggestion)
 
-                            suggestion.setOnClickListener {
-                                onProductSelected(product)
+                                suggestion.setOnClickListener {
+                                    onProductSelected(product)
+                                }
                             }
+                        } catch (e: CancellationException) {
+                            throw e // NORMAL: A NEWER SEARCH REPLACED THIS ONE.
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Search failed: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                }else{
-                    productSuggestionScroll.visibility= View.GONE
+                } else {
+                    productSuggestionScroll.visibility = View.GONE
                 }
             }
         })
     }
 }
-
-
 
 
